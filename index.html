@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FATAFAT - GOOGLE LOGIN - FINAL</title>
+<title>FATAFAT - REAL MULTIPLAYER SYNC</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#0a0a0f;color:#fff;font-family:Arial;padding-bottom:80px}
 .top{height:58px;background:#111;display:flex;justify-content:space-between;align-items:center;padding:0 12px;border-bottom:2px solid gold;position:sticky;top:0;z-index:10}
@@ -18,50 +18,40 @@
 .userRow{background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.15);padding:7px 10px;border-radius:10px;margin:5px 0;display:flex;justify-content:space-between;font-size:11px}
 .userRow.me{border-color:gold;background:rgba(255,215,0,0.2)}
 #finalBox{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:100}
-.adBox{margin:8px;background:#111;border:1px dashed #333;border-radius:8px;height:52px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#666;overflow:hidden}
 #loginPage{position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0a0f;display:flex;align-items:center;justify-content:center;z-index:200;flex-direction:column}
 .gBtn{background:#fff;color:#000;border:none;padding:14px 22px;border-radius:12px;font-weight:900;display:flex;align-items:center;gap:10px;font-size:14px;width:85%;max-width:320px;justify-content:center;margin:8px}
 </style>
 </head><body>
-
 <div id="loginPage">
 <h2 style="color:gold">FATAFAT WORLD WAR</h2>
-<p style="color:#aaa;font-size:12px;text-align:center;padding:0 20px">Login karoge to tumhara coin aur ID safe rahega, kisi bhi phone me wapas milega<br><small id="serverStatus" style="color:#0f0">Server: Ready 🟢</small></p>
+<p style="color:#aaa;font-size:12px;text-align:center;padding:0 20px">Sabke phone me ek sath - REAL MULTIPLAYER<br><small id="serverStatus" style="color:#0f0">Server: Connecting...</small></p>
 <button class="gBtn" onclick="googleLogin()"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20"> Google se Login Karo</button>
 <button class="gBtn" onclick="guestLogin()" style="background:#222;color:#fff;border:1px solid #444">👤 Guest ke roop me khelo</button>
-<small style="color:#666;margin-top:20px">Secure login by Server</small>
 </div>
-
 <div class="top">
 <div onclick="openMenu()" style="background:#222;width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center">☰</div>
 <b>FATAFAT <span style="color:gold">WORLD WAR</span></b>
 <div style="display:flex;gap:6px;align-items:center">
 <img id="uPhoto" src="" style="width:32px;height:32px;border-radius:50%;display:none;border:2px solid gold">
-<div onclick="openWW()" style="background:gold;color:#000;padding:8px 14px;border-radius:20px;font-weight:900;font-size:11px">LIVE ⚔️</div>
+<div onclick="openWW()" style="background:gold;color:#000;padding:8px 14px;border-radius:20px;font-weight:900;font-size:11px">LIVE ⚔️ <span id="onlineCount">0</span></div>
 </div>
 </div>
-
 <div style="display:flex;gap:8px;padding:8px">
-<div id="tab1" onclick="cur=1;show()" style="flex:1;padding:12px;text-align:center;border-radius:12px;font-weight:900;font-size:12px">GAME1 30SEC 15M</div>
-<div id="tab2" onclick="cur=2;show()" style="flex:1;padding:12px;text-align:center;border-radius:12px;font-weight:900;font-size:12px">GAME2 60SEC 28M</div>
+<div id="tab1" onclick="cur=1;show()" style="flex:1;padding:12px;text-align:center;border-radius:12px;font-weight:900;font-size:12px;background:#333">GAME1 30SEC</div>
+<div id="tab2" onclick="cur=2;show()" style="flex:1;padding:12px;text-align:center;border-radius:12px;font-weight:900;font-size:12px;background:#222">GAME2 60SEC</div>
 </div>
-
 <div class="tmr"><div>T30:<b id="t30" style="color:gold">30</b></div><div>T60:<b id="t60" style="color:gold">60</b></div><div>MAIN:<b id="tmain" style="color:#0f0">15:00</b></div><div>D:<b id="dsTop">0</b> K:<b id="ksTop">0</b></div></div>
-
 <div style="text-align:center;font-size:11px;color:#aaa;padding:6px;background:#111;margin:0 8px;border-radius:10px">
 <span id="uName" style="color:gold"></span><br>
 ID:<span id="pid" style="color:#fff">FF-000</span> | Coin:<b id="coin" style="color:gold">1000</b> | Team:<b id="team" style="color:#0f0">-</b> | Free:<b id="free">3</b><br>
-G1:<b id="sel1" style="color:#fff">-</b> | G2:<b id="sel2" style="color:#fff">-</b><br>
-<small id="fbStatus" style="color:#0ff">Server: Sev ✅</small>
+<small id="fbStatus" style="color:#0ff">Server: LIVE SYNC...</small>
 </div>
-
 <div class="grid">
 <button id="red" onclick="pick('red')" class="cbtn" style="background:#e53935">🔴 RED</button>
 <button id="green" onclick="pick('green')" class="cbtn" style="background:#43a047">🟢 GREEN</button>
 <button id="blue" onclick="pick('blue')" class="cbtn" style="background:#1e88e5">🔵 BLUE</button>
 <button id="yellow" onclick="pick('yellow')" class="cbtn" style="background:#fdd835;color:#000">🟡 YELLOW</button>
 </div>
-
 <div class="bbar">
 <div id="chip1" onclick="setChip(1)" class="chip on">1</div>
 <div id="chip2" onclick="setChip(2)" class="chip">2</div>
@@ -70,35 +60,24 @@ G1:<b id="sel1" style="color:#fff">-</b> | G2:<b id="sel2" style="color:#fff">-<
 <div id="chip5" onclick="setChip(5)" class="chip">5</div>
 <button onclick="bet()" style="background:#00c853;border:none;padding:12px 22px;border-radius:12px;color:#fff;font-weight:900">PLAY</button>
 </div>
-
-<div id="adMain" class="adBox">Server: Ad Space - Live</div>
 <div id="history" style="margin:10px;background:#111;border:1px solid #333;border-radius:12px;padding:10px;min-height:44px;display:flex;gap:6px;overflow-x:auto;align-items:center"></div>
-<div style="position:fixed;bottom:0;left:0;width:100%;background:#111;padding:8px;border-top:1px solid #333"><div id="bottomDots" style="display:flex;gap:6px;overflow-x:auto"></div></div>
-
-<div id="menu" class="page">
-<div style="padding:12px;background:#111;display:flex;justify-content:space-between;position:sticky;top:0"><b>MENU</b><span onclick="closeMenu()" style="background:#222;padding:6px 12px;border-radius:8px">✕ Close</span></div>
-<div style="background:#15151f;padding:14px;margin:10px;border-radius:12px">User: <b id="mName" style="color:gold">-</b><br>Wallet: <b id="mcoin" style="color:gold">1000</b> | Free: <b id="mfree">3</b><br>ID: <b id="mid">FF-000</b></div>
-<button onclick="logout()" style="margin:10px;background:#e53935;border:none;padding:12px;border-radius:10px;color:#fff;font-weight:900;width:90%">LOGOUT</button>
-</div>
-
+<div id="menu" class="page"><div style="padding:12px;background:#111;display:flex;justify-content:space-between"><b>MENU</b><span onclick="closeMenu()" style="background:#222;padding:6px 12px;border-radius:8px">✕ Close</span></div>
+<div style="background:#15151f;padding:14px;margin:10px;border-radius:12px">User: <b id="mName" style="color:gold">-</b><br>ID: <b id="mid">FF-000</b></div>
+<button onclick="logout()" style="margin:10px;background:#e53935;border:none;padding:12px;border-radius:10px;color:#fff;font-weight:900;width:90%">LOGOUT</button></div>
 <div id="ww" class="page">
 <div style="padding:12px;background:#111;display:flex;justify-content:space-between;position:sticky;top:0"><span onclick="closeWW()" style="background:#222;padding:6px 12px;border-radius:8px">← Back</span><b>WORLD WAR GAME <span id="wg" style="color:gold">1</span></b><span id="wt" style="color:#0f0;font-weight:900">15:00</span></div>
-<div style="padding:10px"><div id="bal" style="background:#1a1a1f;border:2px solid gold;padding:12px;border-radius:12px;color:gold;font-weight:900;text-align:center">Loading...</div></div>
+<div style="padding:10px"><div id="bal" style="background:#1a1a1f;border:2px solid gold;padding:12px;border-radius:12px;color:gold;font-weight:900;text-align:center">Loading LIVE...</div></div>
 <div style="display:flex;gap:8px;padding:8px">
-<div class="teamCard" style="background:linear-gradient(135deg,#c62828,#ff6f00)"><div style="text-align:center">DHONI<br>USERS: <b id="dc">0</b><br>SCORE: <b id="dsc" style="font-size:30px;color:yellow">0</b></div><div id="dlist" style="background:rgba(0,0,0,0.4);padding:6px;border-radius:8px;margin-top:8px;max-height:150px;overflow:auto;font-size:11px"></div></div>
-<div class="teamCard" style="background:linear-gradient(135deg,#1565c0,#00c853)"><div style="text-align:center">KOHLI<br>USERS: <b id="kc">0</b><br>SCORE: <b id="ksc" style="font-size:30px;color:yellow">0</b></div><div id="klist" style="background:rgba(0,0,0,0.4);padding:6px;border-radius:8px;margin-top:8px;max-height:150px;overflow:auto;font-size:11px"></div></div>
+<div class="teamCard" style="background:linear-gradient(135deg,#c62828,#ff6f00)"><div style="text-align:center">DHONI<br>USERS: <b id="dc">0</b><br>SCORE: <b id="dsc" style="font-size:30px;color:yellow">0</b></div><div id="dlist" style="background:rgba(0,0,0,0.4);padding:6px;border-radius:8px;margin-top:8px;max-height:200px;overflow:auto;font-size:11px"></div></div>
+<div class="teamCard" style="background:linear-gradient(135deg,#1565c0,#00c853)"><div style="text-align:center">KOHLI<br>USERS: <b id="kc">0</b><br>SCORE: <b id="ksc" style="font-size:30px;color:yellow">0</b></div><div id="klist" style="background:rgba(0,0,0,0.4);padding:6px;border-radius:8px;margin-top:8px;max-height:200px;overflow:auto;font-size:11px"></div></div>
 </div>
 <div style="text-align:center;padding:12px"><div id="estatus" style="background:#1a1a1f;padding:10px;border-radius:10px;font-size:12px;font-weight:900">Entry nahi hui</div><button id="ebtn" onclick="entry()" style="width:98%;padding:16px;background:linear-gradient(90deg,gold,#ff9100);color:#000;font-weight:900;border-radius:14px;border:none;margin-top:12px">ENTRY 10 COIN</button></div>
 </div>
-
 <div id="pop" onclick="this.style.display='none'"><div id="popBox" onclick="event.stopPropagation()"><div id="popH" style="padding:14px;text-align:center;font-weight:900;background:#2962ff;border-radius:18px 18px 0 0">Notice</div><div id="popB" style="padding:16px;text-align:center;color:#ccc;white-space:pre-line;font-size:13px">Msg</div><button onclick="document.getElementById('pop').style.display='none'" style="margin:0 auto 14px;display:block;background:#2962ff;border:none;padding:8px 20px;border-radius:20px;color:#fff;font-weight:900">OK</button></div></div>
-<div id="finalBox"><div style="background:#1e1e2f;width:90%;max-width:400px;border-radius:20px;border:2px solid gold;padding:20px;text-align:center"><div style="font-size:22px;font-weight:900;color:gold;margin-bottom:10px">🏆 GAME CLOSE 🏆</div><div id="finalText" style="font-size:14px;line-height:1.6;color:#fff;white-space:pre-line"></div><button onclick="document.getElementById('finalBox').style.display='none'" style="margin-top:16px;background:gold;color:#000;border:none;padding:12px 24px;border-radius:12px;font-weight:900">NEW GAME</button></div></div>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
+import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc, arrayUnion, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const firebaseConfig = {
   apiKey: "AIzaSyAWlPctX9RmB8s5rHO02KBTst76vIsCaxM",
   authDomain: "fatafat-world-war.firebaseapp.com",
@@ -106,98 +85,76 @@ const firebaseConfig = {
   storageBucket: "fatafat-world-war.firebasestorage.app",
   messagingSenderId: "466173462905",
   appId: "1:466173462905:web:3b9a43f2236b84d499c7a8",
-  measurementId: "G-F8FXE8V4Y6"
 };
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
-
-window.googleLogin = function(){
- document.getElementById("serverStatus").innerText="Server: Login ho raha hai...";
- signInWithPopup(auth, provider).then((result)=>{
-   localStorage.setItem("loginType","google");
-   document.getElementById("serverStatus").innerText="Server: Sev ✅";
- }).catch(e=>{alert(e.message); document.getElementById("serverStatus").innerText="Server Error: "+e.message});
+window.liveG1 = {dScore:32,kScore:28,dh:[],kh:[],history:[]};
+window.liveG2 = {dScore:27,kScore:35,dh:[],kh:[],history:[]};
+async function ensureGameDocs(){
+  const g1Ref = doc(db,"live","game1");
+  const g2Ref = doc(db,"live","game2");
+  const g1Snap = await getDoc(g1Ref);
+  if(!g1Snap.exists()){ await setDoc(g1Ref,{dScore:32,kScore:28,dh:[],kh:[],history:[],updated:serverTimestamp()}); }
+  const g2Snap = await getDoc(g2Ref);
+  if(!g2Snap.exists()){ await setDoc(g2Ref,{dScore:27,kScore:35,dh:[],kh:[],history:[],updated:serverTimestamp()}); }
+  onSnapshot(g1Ref,(s)=>{ if(s.exists()){ const d=s.data(); window.liveG1.dScore=d.dScore; window.liveG1.kScore=d.kScore; window.liveG1.dh=d.dh||[]; window.liveG1.kh=d.kh||[]; window.liveG1.history=d.history||[]; if(window.show) window.show(); document.getElementById("fbStatus").innerText="Server: LIVE SYNC ✅"; document.getElementById("onlineCount").innerText=(window.liveG1.dh.length+window.liveG1.kh.length); } });
+  onSnapshot(g2Ref,(s)=>{ if(s.exists()){ const d=s.data(); window.liveG2.dScore=d.dScore; window.liveG2.kScore=d.kScore; window.liveG2.dh=d.dh||[]; window.liveG2.kh=d.kh||[]; window.liveG2.history=d.history||[]; if(window.show) window.show(); } });
 }
-window.guestLogin = function(){
- const guestId = "FF-GUEST-"+Math.floor(100000+Math.random()*900000);
- localStorage.setItem("guestId",guestId);
- localStorage.setItem("guestName","Guest "+guestId.slice(-4));
- localStorage.setItem("loginType","guest");
- document.getElementById("loginPage").style.display="none";
- initGame(guestId, localStorage.getItem("guestName"), "");
-}
-window.logout = function(){
- signOut(auth); localStorage.clear(); location.reload();
-}
-
-onAuthStateChanged(auth, (user)=>{
- if(user){
-   document.getElementById("loginPage").style.display="none";
-   if(document.getElementById("uPhoto")){ document.getElementById("uPhoto").src=user.photoURL; document.getElementById("uPhoto").style.display="block"; }
-   initGame(user.uid.slice(0,8).toUpperCase(), user.displayName, user.photoURL);
- } else {
-   if(localStorage.getItem("loginType")=="guest"){
-     document.getElementById("loginPage").style.display="none";
-     initGame(localStorage.getItem("guestId"), localStorage.getItem("guestName"), "");
-   }
- }
-});
-
-window.initGame = function(uid,name,photo){
- window.pidGlobal = "FF-"+uid;
- window.userNameGlobal = name;
- if(document.getElementById("pid")) document.getElementById("pid").innerText=window.pidGlobal;
- if(document.getElementById("uName")) document.getElementById("uName").innerText=name;
- if(document.getElementById("mName")) document.getElementById("mName").innerText=name;
- if(document.getElementById("mid")) document.getElementById("mid").innerText=window.pidGlobal;
- if(document.getElementById("fbStatus")) document.getElementById("fbStatus").innerText="Server: Sev ✅ "+name;
- if(window.startGame) window.startGame();
- // Save to server
- setDoc(doc(db,"players",uid),{name:name,email:photo||"",coins:1000,lastLogin:Date.now()},{merge:true});
-}
+ensureGameDocs();
+window.googleLogin = function(){ signInWithPopup(auth, provider).catch(e=>{alert(e.message);}); }
+window.guestLogin = function(){ const guestId = "FF-GUEST-"+Math.floor(100000+Math.random()*900000); localStorage.setItem("guestId",guestId); localStorage.setItem("guestName","Guest "+guestId.slice(-4)); localStorage.setItem("loginType","guest"); document.getElementById("loginPage").style.display="none"; initGame(guestId, localStorage.getItem("guestName"), ""); }
+window.logout = function(){ signOut(auth); localStorage.clear(); location.reload(); }
+onAuthStateChanged(auth, (user)=>{ if(user){ document.getElementById("loginPage").style.display="none"; if(document.getElementById("uPhoto")){ document.getElementById("uPhoto").src=user.photoURL; document.getElementById("uPhoto").style.display="block"; } initGame(user.uid.slice(0,8).toUpperCase(), user.displayName, user.photoURL); } else { if(localStorage.getItem("loginType")=="guest"){ document.getElementById("loginPage").style.display="none"; initGame(localStorage.getItem("guestId"), localStorage.getItem("guestName"), ""); } } });
+window.initGame = function(uid,name,photo){ window.pidGlobal = "FF-"+uid; window.userNameGlobal = name; document.getElementById("pid").innerText=window.pidGlobal; document.getElementById("uName").innerText=name; document.getElementById("mName").innerText=name; document.getElementById("mid").innerText=window.pidGlobal; setDoc(doc(db,"players",uid),{name:name,photo:photo||"",lastLogin:Date.now(),id:window.pidGlobal},{merge:true}); if(window.startGame) window.startGame(); }
+window.updateGameScore = async function(gameId, team, points, color){ const ref = doc(db,"live",gameId==1?"game1":"game2"); if(team=="TEAM DHONI"){ await updateDoc(ref,{dScore: increment(points), history: arrayUnion(color)}); } else { await updateDoc(ref,{kScore: increment(points), history: arrayUnion(color)}); } }
+window.addUserToTeam = async function(gameId, team){ const ref = doc(db,"live",gameId==1?"game1":"game2"); const myId = window.pidGlobal || "YOU"; const myEntry = myId+" ("+window.userNameGlobal+")"; if(team=="TEAM DHONI"){ await updateDoc(ref,{dh: arrayUnion(myEntry)}); } else { await updateDoc(ref,{kh: arrayUnion(myEntry)}); } }
 </script>
-
 <script>
-var cur=1, coin=parseInt(localStorage.getItem("coin")||1000), chip=1, freeBet=3, t30=30, t60=60;
-var tMain1=900, tMain2=1680;
-var sel={1:[],2:[]};
-var g1={team:null,entry:false,dScore:32,kScore:28,dh:["FF-1001","FF-1002"],kh:["FF-2001","FF-2002"]};
-var g2={team:null,entry:false,dScore:27,kScore:35,dh:["FF-3001","FF-3002"],kh:["FF-4001","FF-4002"]};
-function $(id){return document.getElementById(id);}
-function pop(h,m){$("popH").innerText=h; $("popB").innerText=m; $("pop").style.display="flex";}
-function openMenu(){ $("menu").style.display="block"; show(); }
-function closeMenu(){ $("menu").style.display="none"; }
-function openWW(){ $("ww").style.display="block"; show(); }
-function closeWW(){ $("ww").style.display="none"; }
-function fmt(s){var m=Math.floor(s/60), sc=s%60; return (m<10?"0"+m:m)+":"+(sc<10?"0"+sc:sc);}
+var cur=1, coin=parseInt(localStorage.getItem("coin")||1000), chip=1, freeBet=3;
+var sel={1:[],2:[]}; var myTeams={1:null,2:null}; var myEntry={1:false,2:false};
+function $(id){return document.getElementById(id);} function pop(h,m){$("popH").innerText=h; $("popB").innerText=m; $("pop").style.display="flex";}
+function openMenu(){ $("menu").style.display="block"; show(); } function closeMenu(){ $("menu").style.display="none"; } function openWW(){ $("ww").style.display="block"; show(); } function closeWW(){ $("ww").style.display="none"; }
 window.startGame = function(){ show(); }
 function show(){
-var g=cur==1?g1:g2; if(!$("pid")) return;
-$("coin").innerText=coin; if($("mcoin")) $("mcoin").innerText=coin;
-$("team").innerText=g.team||"-"; $("dsTop").innerText=g.dScore; $("ksTop").innerText=g.kScore;
+var g = cur==1? window.liveG1 : window.liveG2;
+if(!g ||!$("pid")) return;
+$("coin").innerText=coin; $("team").innerText=myTeams[cur]||"-"; $("dsTop").innerText=g.dScore; $("ksTop").innerText=g.kScore;
 $("dsc").innerText=g.dScore; $("ksc").innerText=g.kScore; $("dc").innerText=g.dh.length; $("kc").innerText=g.kh.length;
-$("sel1").innerText=sel[1].join(",")||"-"; $("sel2").innerText=sel[2].join(",")||"-";
-$("free").innerText=freeBet; if($("mfree")) $("mfree").innerText=freeBet;
-$("dlist").innerHTML=g.dh.map(function(id){return "<div class='userRow"+(id==(window.pidGlobal)?" me":"")+"'>"+id+"</div>";}).join("");
-$("klist").innerHTML=g.kh.map(function(id){return "<div class='userRow"+(id==(window.pidGlobal)?" me":"")+"'>"+id+"</div>";}).join("");
-$("estatus").innerText=g.entry? "✅ Team"+cur+": "+g.team : "Entry nahi hui Game "+cur;
-$("ebtn").innerText=g.entry? "HO GAYI - Team"+cur+": "+g.team : "ENTRY 10 COIN - GAME "+cur;
-$("wg").innerText=cur;
+$("dlist").innerHTML=g.dh.map(function(id){return "<div class='userRow"+(id.includes(window.pidGlobal)?" me":"")+"'>"+id+"</div>";}).join("")||"<small>koi nahi</small>";
+$("klist").innerHTML=g.kh.map(function(id){return "<div class='userRow"+(id.includes(window.pidGlobal)?" me":"")+"'>"+id+"</div>";}).join("")||"<small>koi nahi</small>";
+$("estatus").innerText=myEntry[cur]? "✅ Team"+cur+": "+myTeams[cur]+" (SYNC ON)" : "Entry nahi hui Game "+cur;
+$("ebtn").innerText=myEntry[cur]? "HO GAYI - Team"+cur+": "+myTeams[cur] : "ENTRY 10 COIN - GAME "+cur;
+$("wg").innerText=cur; $("bal").innerText="🔴 LIVE SYNC | Dhoni: "+g.dScore+" - Kohli: "+g.kScore+" | Users: "+(g.dh.length+g.kh.length);
 ["red","green","blue","yellow"].forEach(function(col){var el=$(col); if(el) el.className=sel[cur].indexOf(col)>-1?"cbtn on":"cbtn";});
+if(g.history){ $("history").innerHTML=g.history.slice(-20).reverse().map(c=>"<div style='width:22px;height:22px;border-radius:50%;background:"+c+";display:inline-block;margin:3px;border:2px solid #fff'></div>").join(""); }
 localStorage.setItem("coin",coin);
 }
 function setChip(n){chip=n; for(var i=1;i<=5;i++){$("chip"+i).className="chip";} $("chip"+n).className="chip on"; show();}
-function pick(c){var g=cur==1?g1:g2;if(!g.entry){openWW();return;}if(g.team=="TEAM DHONI" && (c=="blue"||c=="green")){pop("Team Rule","Dhoni me RED YELLOW only");return;}if(g.team=="TEAM KOHLI" && (c=="red"||c=="yellow")){pop("Team Rule","Kohli me BLUE GREEN only");return;}var idx=sel[cur].indexOf(c); if(idx>-1) sel[cur].splice(idx,1); else{if(sel[cur].length>=2){pop("Limit","Max 2");return;} sel[cur].push(c);}show();}
-function bet(){if(sel[cur].length==0){pop("Error","Color chuno");return;}var g=cur==1?g1:g2;if(!g.entry){openWW();return;}if(freeBet<=0){ if(coin<1){pop("Coin Kam","1 coin chahiye");return;} coin-=1; freeBet=3; }freeBet--; pop("Server: Sev ✅ G"+cur,"Team"+cur+": "+g.team+"\nScore me add hoga"); show();}
-function entry(){var g=cur==1?g1:g2;if(g.entry){pop("Already","Ho chuki");return;}if(coin<10){pop("Coin Kam","10 coin chahiye");return;}coin-=10; var t=Math.random()>0.5?"TEAM DHONI":"TEAM KOHLI"; g.team=t; g.entry=true; freeBet=3;if(t=="TEAM DHONI") g.dh.push(window.pidGlobal||"YOU"); else g.kh.push(window.pidGlobal||"YOU");closeWW(); pop("Server: Sev ✅ Entry G"+cur,"Team"+cur+": "+t); show();}
-function result(gameId,col){var g=gameId==1?g1:g2;var betColors=sel[gameId].slice();var winPoint=gameId==1?18*chip:37*chip;var isWin=betColors.indexOf(col)>-1;if(betColors.length>0 && isWin){ if(g.team=="TEAM DHONI") g.dScore+=winPoint; else g.kScore+=winPoint; }var h=$("history"); if(h){ if(h.children.length>18) h.removeChild(h.lastChild); var dot=document.createElement("div"); dot.style.cssText="width:22px;height:22px;border-radius:50%;background:"+col+";display:inline-block;margin:3px;border:2px solid "+(isWin?"#0f0":"#555"); h.insertBefore(dot,h.firstChild); }sel[gameId]=[]; show();}
-function resetGame(gameId){ var g=gameId==1?g1:g2; g.team=null; g.entry=false; g.dScore=gameId==1?32:27; g.kScore=gameId==1?28:35; g.dh=["FF-1001","FF-1002"]; g.kh=["FF-2001","FF-2002"]; if(gameId==1) tMain1=900; else tMain2=1680; sel[gameId]=[]; freeBet=3; }
-function declareWinner(gameId){ var g=gameId==1?g1:g2; var winner = g.dScore>g.kScore? "DHONI TEAM WIN" : g.kScore>g.dScore? "KOHLI TEAM WIN" : "DRAW"; $("finalText").innerText="GAME "+gameId+" CLOSE\n\nWINNER: "+winner+"\nDhoni: "+g.dScore+" | Kohli: "+g.kScore+"\n\nNaya game - fir ENTRY lo"; $("finalBox").style.display="flex"; setTimeout(()=>{resetGame(gameId); show();},500); }
-setInterval(function(){t30--; if(t30<0){t30=30; var cols=["red","green","blue","yellow"]; result(1,cols[Math.floor(Math.random()*4)]);} if($("t30")) $("t30").innerText=t30;t60--; if(t60<0){t60=60; var cols=["red","green","blue","yellow"]; result(2,cols[Math.floor(Math.random()*4)]);} if($("t60")) $("t60").innerText=t60;tMain1--; if(tMain1<=0){declareWinner(1);} tMain2--; if(tMain2<=0){declareWinner(2);}var curMain = cur==1? tMain1 : tMain2; if($("tmain")) $("tmain").innerText=fmt(curMain); if($("wt")) $("wt").innerText=fmt(curMain);},1000);
+function pick(c){
+if(!myEntry[cur]){openWW();return;}
+if(myTeams[cur]=="TEAM DHONI" && (c=="blue"||c=="green")){pop("Team Rule","Dhoni me RED YELLOW only");return;}
+if(myTeams[cur]=="TEAM KOHLI" && (c=="red"||c=="yellow")){pop("Team Rule","Kohli me BLUE GREEN only");return;}
+var idx=sel[cur].indexOf(c); if(idx>-1) sel[cur].splice(idx,1); else{if(sel[cur].length>=2){pop("Limit","Max 2");return;} sel[cur].push(c);}show();}
+async function bet(){
+if(sel[cur].length==0){pop("Error","Color chuno");return;}
+if(!myEntry[cur]){openWW();return;}
+if(freeBet<=0){ if(coin<1){pop("Coin Kam","1 coin chahiye");return;} coin-=1; freeBet=3; }freeBet--;
+var betColors=sel[cur].slice(); var winPoint=cur==1?18*chip:37*chip;
+var cols=["red","green","blue","yellow"]; var winColor=cols[Math.floor(Math.random()*4)];
+var isWin=betColors.indexOf(winColor)>-1;
+if(isWin){ await window.updateGameScore(cur, myTeams[cur], winPoint, winColor); pop("LIVE SYNC ✅ G"+cur, "WIN! "+winColor+" - Score +"+winPoint+" sabko dikhega"); }
+else { await window.updateGameScore(cur, myTeams[cur], 0, winColor); pop("LIVE SYNC G"+cur, "Result: "+winColor); }
+sel[cur]=[]; show();
+}
+async function entry(){
+if(myEntry[cur]){pop("Already","Ho chuki");return;}
+if(coin<10){pop("Coin Kam","10 coin chahiye");return;}
+coin-=10; var t=Math.random()>0.5?"TEAM DHONI":"TEAM KOHLI"; myTeams[cur]=t; myEntry[cur]=true; freeBet=3;
+await window.addUserToTeam(cur,t);
+closeWW(); pop("LIVE SYNC ✅ Entry G"+cur,"Team"+cur+": "+t+" - Ab sabke phone me dikhega"); show();
+}
 show();
 </script>
-</body>
-  </html>
+</body></html>
