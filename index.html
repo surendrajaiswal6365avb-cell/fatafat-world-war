@@ -1,160 +1,138 @@
 <!DOCTYPE html>
 <html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FATAFAT - REAL MULTIPLAYER SYNC</title>
+<title>FATAFAT WORLD WAR - CHECKED FINAL</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#0a0a0f;color:#fff;font-family:Arial;padding-bottom:80px}
-.top{height:58px;background:#111;display:flex;justify-content:space-between;align-items:center;padding:0 12px;border-bottom:2px solid gold;position:sticky;top:0;z-index:10}
-.tmr{display:flex;justify-content:space-between;background:#15151f;margin:8px;padding:12px;border-radius:14px;border:1px solid #2a2a3a}
+.top{height:58px;background:#111;display:flex;justify-content:space-between;align-items:center;padding:0 12px;border-bottom:2px solid gold;position:sticky;top:0;z-index:20}
+.tabs{display:flex;gap:8px;padding:8px;position:sticky;top:58px;z-index:19;background:#0a0a0f}
+.tab{flex:1;padding:14px;text-align:center;border-radius:12px;font-weight:900;font-size:13px;cursor:pointer;border:2px solid gold}
+#tab1{background:linear-gradient(135deg,#ff0000,#ff9800)!important;color:#fff}
+#tab2{background:linear-gradient(135deg,#0066ff,#00ff88)!important;color:#fff}
+.tab.active{box-shadow:0 0 20px #fff!important;transform:scale(1.05)}
+.tmr{display:flex;justify-content:space-around;background:#15151f;margin:8px;padding:14px;border-radius:14px;border:2px solid gold;text-align:center}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px}
 .cbtn{padding:28px;border-radius:16px;border:3px solid transparent;font-weight:900;color:#fff;font-size:15px}
 .cbtn.on{border-color:#fff;box-shadow:0 0 20px #fff}
-.bbar{display:flex;gap:8px;background:#15151f;margin:10px;padding:12px;border-radius:14px;align-items:center;justify-content:center;border:1px solid #2a2a3a}
+.bbar{display:flex;gap:8px;background:#15151f;margin:10px;padding:12px;border-radius:14px;justify-content:center;align-items:center;border:1px solid #333}
 .chip{width:40px;height:40px;border-radius:50%;background:#222;border:2px solid #555;display:flex;align-items:center;justify-content:center;font-weight:900}
 .chip.on{background:gold;color:#000;border-color:gold}
 .page{position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0a0f;display:none;z-index:50;overflow:auto}
 #pop{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;z-index:99}
 #popBox{background:#1e1e2f;width:88%;max-width:360px;border-radius:18px;border:1px solid #444}
 .teamCard{flex:1;padding:12px;border-radius:16px;border:2px solid rgba(255,255,255,0.2)}
-.userRow{background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.15);padding:7px 10px;border-radius:10px;margin:5px 0;display:flex;justify-content:space-between;font-size:11px}
-.userRow.me{border-color:gold;background:rgba(255,215,0,0.2)}
-#finalBox{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:100}
 #loginPage{position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0a0f;display:flex;align-items:center;justify-content:center;z-index:200;flex-direction:column}
 .gBtn{background:#fff;color:#000;border:none;padding:14px 22px;border-radius:12px;font-weight:900;display:flex;align-items:center;gap:10px;font-size:14px;width:85%;max-width:320px;justify-content:center;margin:8px}
+.adBox{margin:8px;background:#111;border:1px dashed #333;border-radius:10px;height:60px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#666;flex-direction:column}
 </style>
 </head><body>
-<div id="loginPage">
-<h2 style="color:gold">FATAFAT WORLD WAR</h2>
-<p style="color:#aaa;font-size:12px;text-align:center;padding:0 20px">Sabke phone me ek sath - REAL MULTIPLAYER<br><small id="serverStatus" style="color:#0f0">Server: Connecting...</small></p>
-<button class="gBtn" onclick="googleLogin()"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20"> Google se Login Karo</button>
-<button class="gBtn" onclick="guestLogin()" style="background:#222;color:#fff;border:1px solid #444">👤 Guest ke roop me khelo</button>
+<div id="loginPage"><h2 style="color:gold">FATAFAT WORLD WAR</h2><p style="color:#0f0;font-size:12px;text-align:center">✅ CHECKED FINAL<br>1 Coin=3 Bet | Score Team Wise</p><button class="gBtn" onclick="guestLogin()">👤 Guest Play</button></div>
+<div class="top"><div onclick="openMenu()" style="background:#222;width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center">☰</div><b>FATAFAT <span style="color:gold">WORLD WAR</span></b><div onclick="openWW()" style="background:gold;color:#000;padding:8px 14px;border-radius:20px;font-weight:900">LIVE</div></div>
+<div class="tabs"><div id="tab1" onclick="switchGame(1)" class="tab active">GAME1<br>30SEC-15M-18 Score</div><div id="tab2" onclick="switchGame(2)" class="tab">GAME2<br>60SEC-28M-37 Score</div></div>
+<div class="tmr"><div>T30:<b id="t30" style="color:gold">30</b></div><div>T60:<b id="t60" style="color:gold">60</b></div><div>MAIN:<b id="tmain" style="color:#0f0">15:00</b></div><div>D:<b id="dsTop">32</b> K:<b id="ksTop">28</b></div></div>
+<div style="text-align:center;font-size:11px;color:#aaa;padding:6px;background:#111;margin:0 8px;border-radius:10px">ID:<span id="pid">FF-000</span> | Coin:<b id="coin" style="color:gold">1000</b> | Team:<b id="team">-</b> | Free:<b id="free" style="color:#0f0">3</b> | Chip:<b id="chipShow">1</b><br><span style="color:#0f0">DHONI=🔴🟡 | KOHLI=🔵🟢</span></div>
+<div class="grid"><button id="red" onclick="pick('red')" class="cbtn" style="background:#e53935">🔴 RED - DHONI</button><button id="green" onclick="pick('green')" class="cbtn" style="background:#43a047">🟢 GREEN - KOHLI</button><button id="blue" onclick="pick('blue')" class="cbtn" style="background:#1e88e5">🔵 BLUE - KOHLI</button><button id="yellow" onclick="pick('yellow')" class="cbtn" style="background:#fdd835;color:#000">🟡 YELLOW - DHONI</button></div>
+<div class="bbar"><div id="chip1" onclick="setChip(1)" class="chip on">1</div><div id="chip2" onclick="setChip(2)" class="chip">2</div><div id="chip3" onclick="setChip(3)" class="chip">3</div><div id="chip4" onclick="setChip(4)" class="chip">4</div><div id="chip5" onclick="setChip(5)" class="chip">5</div><button onclick="bet()" style="background:#00c853;border:none;padding:12px 22px;border-radius:12px;color:#fff;font-weight:900">PLAY</button></div>
+<div id="adMain" class="adBox"><span>🎯 AD 1 - Main Game 320x50</span><small>Final Fixed</small></div>
+<div id="history" style="margin:10px;background:#111;border:1px solid #333;border-radius:12px;padding:10px;min-height:44px;display:flex;gap:6px;overflow-x:auto"></div>
+
+<div id="menu" class="page"><div style="padding:12px;background:#111;display:flex;justify-content:space-between"><b>PROFILE</b><span onclick="closeMenu()" style="background:#222;padding:6px 12px;border-radius:8px">✕ Close</span></div>
+<div style="background:linear-gradient(135deg,#1e1e2f,#2a2a4a);padding:20px;margin:10px;border-radius:16px;border:2px solid gold;text-align:center"><div id="mName" style="font-size:18px;font-weight:900;color:gold">Guest</div><div id="mid" style="font-size:12px;color:#aaa">FF-000</div><div style="margin-top:12px;display:flex;gap:10px;justify-content:center"><div style="background:#111;padding:10px 16px;border-radius:12px"><small>COIN</small><br><b id="mcoin" style="color:gold">1000</b></div><div style="background:#111;padding:10px 16px;border-radius:12px"><small>FREE</small><br><b id="mfree" style="color:#0f0">3</b></div><div style="background:#111;padding:10px 16px;border-radius:12px"><small>SCORE</small><br><b id="mtotalWin" style="color:#0f0">0</b></div></div></div>
+<div style="padding:10px;display:grid;grid-template-columns:1fr 1fr;gap:10px"><button onclick="addCoin()" style="background:gold;border:none;padding:14px;border-radius:12px;color:#000;font-weight:900">+ ADD 100 COIN</button><button onclick="logout()" style="background:#e53935;border:none;padding:14px;border-radius:12px;color:#fff;font-weight:900">LOGOUT</button></div>
+<div id="adMenu" class="adBox" style="border-color:gold;height:70px"><span>📱 AD 2 - Menu Banner 320x50</span><small>Final</small></div>
 </div>
-<div class="top">
-<div onclick="openMenu()" style="background:#222;width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center">☰</div>
-<b>FATAFAT <span style="color:gold">WORLD WAR</span></b>
-<div style="display:flex;gap:6px;align-items:center">
-<img id="uPhoto" src="" style="width:32px;height:32px;border-radius:50%;display:none;border:2px solid gold">
-<div onclick="openWW()" style="background:gold;color:#000;padding:8px 14px;border-radius:20px;font-weight:900;font-size:11px">LIVE ⚔️ <span id="onlineCount">0</span></div>
-</div>
-</div>
+
+<div id="ww" class="page"><div style="padding:12px;background:#111;display:flex;justify-content:space-between"><span onclick="closeWW()" style="background:#222;padding:6px 12px;border-radius:8px">← Back</span><b>GAME <span id="wg">1</span></b><span id="wt">15:00</span></div>
+<div style="padding:10px"><div id="bal" style="background:#1a1a1f;border:2px solid gold;padding:12px;border-radius:12px;color:gold;font-weight:900;text-align:center">LIVE SCORE - CHECKED</div></div>
 <div style="display:flex;gap:8px;padding:8px">
-<div id="tab1" onclick="cur=1;show()" style="flex:1;padding:12px;text-align:center;border-radius:12px;font-weight:900;font-size:12px;background:#333">GAME1 30SEC</div>
-<div id="tab2" onclick="cur=2;show()" style="flex:1;padding:12px;text-align:center;border-radius:12px;font-weight:900;font-size:12px;background:#222">GAME2 60SEC</div>
+<div class="teamCard" style="background:linear-gradient(135deg,#c62828,#ff6f00)"><div style="text-align:center">DHONI TEAM<br>🔴🟡<br>SCORE: <b id="dsc" style="font-size:30px;color:yellow">32</b><br>USERS: <b id="dc">0</b></div><div id="dlist" style="background:rgba(0,0,0,0.4);padding:6px;border-radius:8px;margin-top:8px;max-height:150px;overflow:auto;font-size:11px"></div></div>
+<div class="teamCard" style="background:linear-gradient(135deg,#1565c0,#00c853)"><div style="text-align:center">KOHLI TEAM<br>🔵🟢<br>SCORE: <b id="ksc" style="font-size:30px;color:yellow">28</b><br>USERS: <b id="kc">0</b></div><div id="klist" style="background:rgba(0,0,0,0.4);padding:6px;border-radius:8px;margin-top:8px;max-height:150px;overflow:auto;font-size:11px"></div></div>
 </div>
-<div class="tmr"><div>T30:<b id="t30" style="color:gold">30</b></div><div>T60:<b id="t60" style="color:gold">60</b></div><div>MAIN:<b id="tmain" style="color:#0f0">15:00</b></div><div>D:<b id="dsTop">0</b> K:<b id="ksTop">0</b></div></div>
-<div style="text-align:center;font-size:11px;color:#aaa;padding:6px;background:#111;margin:0 8px;border-radius:10px">
-<span id="uName" style="color:gold"></span><br>
-ID:<span id="pid" style="color:#fff">FF-000</span> | Coin:<b id="coin" style="color:gold">1000</b> | Team:<b id="team" style="color:#0f0">-</b> | Free:<b id="free">3</b><br>
-<small id="fbStatus" style="color:#0ff">Server: LIVE SYNC...</small>
-</div>
-<div class="grid">
-<button id="red" onclick="pick('red')" class="cbtn" style="background:#e53935">🔴 RED</button>
-<button id="green" onclick="pick('green')" class="cbtn" style="background:#43a047">🟢 GREEN</button>
-<button id="blue" onclick="pick('blue')" class="cbtn" style="background:#1e88e5">🔵 BLUE</button>
-<button id="yellow" onclick="pick('yellow')" class="cbtn" style="background:#fdd835;color:#000">🟡 YELLOW</button>
-</div>
-<div class="bbar">
-<div id="chip1" onclick="setChip(1)" class="chip on">1</div>
-<div id="chip2" onclick="setChip(2)" class="chip">2</div>
-<div id="chip3" onclick="setChip(3)" class="chip">3</div>
-<div id="chip4" onclick="setChip(4)" class="chip">4</div>
-<div id="chip5" onclick="setChip(5)" class="chip">5</div>
-<button onclick="bet()" style="background:#00c853;border:none;padding:12px 22px;border-radius:12px;color:#fff;font-weight:900">PLAY</button>
-</div>
-<div id="history" style="margin:10px;background:#111;border:1px solid #333;border-radius:12px;padding:10px;min-height:44px;display:flex;gap:6px;overflow-x:auto;align-items:center"></div>
-<div id="menu" class="page"><div style="padding:12px;background:#111;display:flex;justify-content:space-between"><b>MENU</b><span onclick="closeMenu()" style="background:#222;padding:6px 12px;border-radius:8px">✕ Close</span></div>
-<div style="background:#15151f;padding:14px;margin:10px;border-radius:12px">User: <b id="mName" style="color:gold">-</b><br>ID: <b id="mid">FF-000</b></div>
-<button onclick="logout()" style="margin:10px;background:#e53935;border:none;padding:12px;border-radius:10px;color:#fff;font-weight:900;width:90%">LOGOUT</button></div>
-<div id="ww" class="page">
-<div style="padding:12px;background:#111;display:flex;justify-content:space-between;position:sticky;top:0"><span onclick="closeWW()" style="background:#222;padding:6px 12px;border-radius:8px">← Back</span><b>WORLD WAR GAME <span id="wg" style="color:gold">1</span></b><span id="wt" style="color:#0f0;font-weight:900">15:00</span></div>
-<div style="padding:10px"><div id="bal" style="background:#1a1a1f;border:2px solid gold;padding:12px;border-radius:12px;color:gold;font-weight:900;text-align:center">Loading LIVE...</div></div>
-<div style="display:flex;gap:8px;padding:8px">
-<div class="teamCard" style="background:linear-gradient(135deg,#c62828,#ff6f00)"><div style="text-align:center">DHONI<br>USERS: <b id="dc">0</b><br>SCORE: <b id="dsc" style="font-size:30px;color:yellow">0</b></div><div id="dlist" style="background:rgba(0,0,0,0.4);padding:6px;border-radius:8px;margin-top:8px;max-height:200px;overflow:auto;font-size:11px"></div></div>
-<div class="teamCard" style="background:linear-gradient(135deg,#1565c0,#00c853)"><div style="text-align:center">KOHLI<br>USERS: <b id="kc">0</b><br>SCORE: <b id="ksc" style="font-size:30px;color:yellow">0</b></div><div id="klist" style="background:rgba(0,0,0,0.4);padding:6px;border-radius:8px;margin-top:8px;max-height:200px;overflow:auto;font-size:11px"></div></div>
-</div>
-<div style="text-align:center;padding:12px"><div id="estatus" style="background:#1a1a1f;padding:10px;border-radius:10px;font-size:12px;font-weight:900">Entry nahi hui</div><button id="ebtn" onclick="entry()" style="width:98%;padding:16px;background:linear-gradient(90deg,gold,#ff9100);color:#000;font-weight:900;border-radius:14px;border:none;margin-top:12px">ENTRY 10 COIN</button></div>
-</div>
-<div id="pop" onclick="this.style.display='none'"><div id="popBox" onclick="event.stopPropagation()"><div id="popH" style="padding:14px;text-align:center;font-weight:900;background:#2962ff;border-radius:18px 18px 0 0">Notice</div><div id="popB" style="padding:16px;text-align:center;color:#ccc;white-space:pre-line;font-size:13px">Msg</div><button onclick="document.getElementById('pop').style.display='none'" style="margin:0 auto 14px;display:block;background:#2962ff;border:none;padding:8px 20px;border-radius:20px;color:#fff;font-weight:900">OK</button></div></div>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc, arrayUnion, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-const firebaseConfig = {
-  apiKey: "AIzaSyAWlPctX9RmB8s5rHO02KBTst76vIsCaxM",
-  authDomain: "fatafat-world-war.firebaseapp.com",
-  projectId: "fatafat-world-war",
-  storageBucket: "fatafat-world-war.firebasestorage.app",
-  messagingSenderId: "466173462905",
-  appId: "1:466173462905:web:3b9a43f2236b84d499c7a8",
-};
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const provider = new GoogleAuthProvider();
-window.liveG1 = {dScore:32,kScore:28,dh:[],kh:[],history:[]};
-window.liveG2 = {dScore:27,kScore:35,dh:[],kh:[],history:[]};
-async function ensureGameDocs(){
-  const g1Ref = doc(db,"live","game1");
-  const g2Ref = doc(db,"live","game2");
-  const g1Snap = await getDoc(g1Ref);
-  if(!g1Snap.exists()){ await setDoc(g1Ref,{dScore:32,kScore:28,dh:[],kh:[],history:[],updated:serverTimestamp()}); }
-  const g2Snap = await getDoc(g2Ref);
-  if(!g2Snap.exists()){ await setDoc(g2Ref,{dScore:27,kScore:35,dh:[],kh:[],history:[],updated:serverTimestamp()}); }
-  onSnapshot(g1Ref,(s)=>{ if(s.exists()){ const d=s.data(); window.liveG1.dScore=d.dScore; window.liveG1.kScore=d.kScore; window.liveG1.dh=d.dh||[]; window.liveG1.kh=d.kh||[]; window.liveG1.history=d.history||[]; if(window.show) window.show(); document.getElementById("fbStatus").innerText="Server: LIVE SYNC ✅"; document.getElementById("onlineCount").innerText=(window.liveG1.dh.length+window.liveG1.kh.length); } });
-  onSnapshot(g2Ref,(s)=>{ if(s.exists()){ const d=s.data(); window.liveG2.dScore=d.dScore; window.liveG2.kScore=d.kScore; window.liveG2.dh=d.dh||[]; window.liveG2.kh=d.kh||[]; window.liveG2.history=d.history||[]; if(window.show) window.show(); } });
-}
-ensureGameDocs();
-window.googleLogin = function(){ signInWithPopup(auth, provider).catch(e=>{alert(e.message);}); }
-window.guestLogin = function(){ const guestId = "FF-GUEST-"+Math.floor(100000+Math.random()*900000); localStorage.setItem("guestId",guestId); localStorage.setItem("guestName","Guest "+guestId.slice(-4)); localStorage.setItem("loginType","guest"); document.getElementById("loginPage").style.display="none"; initGame(guestId, localStorage.getItem("guestName"), ""); }
-window.logout = function(){ signOut(auth); localStorage.clear(); location.reload(); }
-onAuthStateChanged(auth, (user)=>{ if(user){ document.getElementById("loginPage").style.display="none"; if(document.getElementById("uPhoto")){ document.getElementById("uPhoto").src=user.photoURL; document.getElementById("uPhoto").style.display="block"; } initGame(user.uid.slice(0,8).toUpperCase(), user.displayName, user.photoURL); } else { if(localStorage.getItem("loginType")=="guest"){ document.getElementById("loginPage").style.display="none"; initGame(localStorage.getItem("guestId"), localStorage.getItem("guestName"), ""); } } });
-window.initGame = function(uid,name,photo){ window.pidGlobal = "FF-"+uid; window.userNameGlobal = name; document.getElementById("pid").innerText=window.pidGlobal; document.getElementById("uName").innerText=name; document.getElementById("mName").innerText=name; document.getElementById("mid").innerText=window.pidGlobal; setDoc(doc(db,"players",uid),{name:name,photo:photo||"",lastLogin:Date.now(),id:window.pidGlobal},{merge:true}); if(window.startGame) window.startGame(); }
-window.updateGameScore = async function(gameId, team, points, color){ const ref = doc(db,"live",gameId==1?"game1":"game2"); if(team=="TEAM DHONI"){ await updateDoc(ref,{dScore: increment(points), history: arrayUnion(color)}); } else { await updateDoc(ref,{kScore: increment(points), history: arrayUnion(color)}); } }
-window.addUserToTeam = async function(gameId, team){ const ref = doc(db,"live",gameId==1?"game1":"game2"); const myId = window.pidGlobal || "YOU"; const myEntry = myId+" ("+window.userNameGlobal+")"; if(team=="TEAM DHONI"){ await updateDoc(ref,{dh: arrayUnion(myEntry)}); } else { await updateDoc(ref,{kh: arrayUnion(myEntry)}); } }
-</script>
+<div style="text-align:center;padding:12px"><div id="estatus">Entry nahi hui</div><button id="ebtn" onclick="entry()" style="width:98%;padding:16px;background:gold;color:#000;font-weight:900;border-radius:14px;border:none;margin-top:12px">ENTRY 10 COIN</button>
+<div id="adWW" class="adBox" style="border-color:#00ff88;height:90px;margin-top:12px"><span>⚔️ AD 3 - World War 300x100</span><small>Final</small></div>
+</div></div>
+
+<div id="pop" onclick="this.style.display='none'"><div id="popBox" onclick="event.stopPropagation()"><div id="popH" style="padding:14px;text-align:center;font-weight:900;background:#2962ff;border-radius:18px 18px 0 0">Notice</div><div id="popB" style="padding:16px;text-align:center;color:#ccc;white-space:pre-line"></div><button onclick="document.getElementById('pop').style.display='none'" style="margin:0 auto 14px;display:block;background:#2962ff;border:none;padding:8px 20px;border-radius:20px;color:#fff;font-weight:900">OK</button></div></div>
+
 <script>
-var cur=1, coin=parseInt(localStorage.getItem("coin")||1000), chip=1, freeBet=3;
-var sel={1:[],2:[]}; var myTeams={1:null,2:null}; var myEntry={1:false,2:false};
-function $(id){return document.getElementById(id);} function pop(h,m){$("popH").innerText=h; $("popB").innerText=m; $("pop").style.display="flex";}
-function openMenu(){ $("menu").style.display="block"; show(); } function closeMenu(){ $("menu").style.display="none"; } function openWW(){ $("ww").style.display="block"; show(); } function closeWW(){ $("ww").style.display="none"; }
-window.startGame = function(){ show(); }
+var cur=1, coin=1000, chip=1, freeBet=3, t30=30, t60=60, tMain1=900, tMain2=1680, totalWinScore=0;
+var sel={1:[],2:[]}, myTeams={1:null,2:null}, myEntry={1:false,2:false};
+var liveG1={dScore:32,kScore:28,dh:[],kh:[],history:[]}, liveG2={dScore:27,kScore:35,dh:[],kh:[],history:[]};
+function $(id){return document.getElementById(id);}
+function pop(h,m){$("popH").innerText=h; $("popB").innerText=m; $("pop").style.display="flex";}
+function openMenu(){ $("menu").style.display="block"; show(); }
+function closeMenu(){ $("menu").style.display="none"; }
+function openWW(){ $("ww").style.display="block"; show(); }
+function closeWW(){ $("ww").style.display="none"; }
+function fmt(s){var m=Math.floor(s/60),sc=s%60; return (m<10?"0"+m:m)+":"+(sc<10?"0"+sc:sc);}
+function switchGame(n){ cur=n; show(); }
+function guestLogin(){ document.getElementById("loginPage").style.display="none"; let id="FF-"+Math.floor(100000+Math.random()*900000); window.pidGlobal=id; $("pid").innerText=id; $("mid").innerText=id; $("mName").innerText="Guest "+id.slice(-4); show(); }
+function logout(){ location.reload(); }
 function show(){
-var g = cur==1? window.liveG1 : window.liveG2;
-if(!g ||!$("pid")) return;
-$("coin").innerText=coin; $("team").innerText=myTeams[cur]||"-"; $("dsTop").innerText=g.dScore; $("ksTop").innerText=g.kScore;
-$("dsc").innerText=g.dScore; $("ksc").innerText=g.kScore; $("dc").innerText=g.dh.length; $("kc").innerText=g.kh.length;
-$("dlist").innerHTML=g.dh.map(function(id){return "<div class='userRow"+(id.includes(window.pidGlobal)?" me":"")+"'>"+id+"</div>";}).join("")||"<small>koi nahi</small>";
-$("klist").innerHTML=g.kh.map(function(id){return "<div class='userRow"+(id.includes(window.pidGlobal)?" me":"")+"'>"+id+"</div>";}).join("")||"<small>koi nahi</small>";
-$("estatus").innerText=myEntry[cur]? "✅ Team"+cur+": "+myTeams[cur]+" (SYNC ON)" : "Entry nahi hui Game "+cur;
-$("ebtn").innerText=myEntry[cur]? "HO GAYI - Team"+cur+": "+myTeams[cur] : "ENTRY 10 COIN - GAME "+cur;
-$("wg").innerText=cur; $("bal").innerText="🔴 LIVE SYNC | Dhoni: "+g.dScore+" - Kohli: "+g.kScore+" | Users: "+(g.dh.length+g.kh.length);
-["red","green","blue","yellow"].forEach(function(col){var el=$(col); if(el) el.className=sel[cur].indexOf(col)>-1?"cbtn on":"cbtn";});
-if(g.history){ $("history").innerHTML=g.history.slice(-20).reverse().map(c=>"<div style='width:22px;height:22px;border-radius:50%;background:"+c+";display:inline-block;margin:3px;border:2px solid #fff'></div>").join(""); }
-localStorage.setItem("coin",coin);
+ try{
+  var g=cur==1?liveG1:liveG2;
+  $("coin").innerText=coin; $("mcoin").innerText=coin; $("mfree").innerText=freeBet; $("mtotalWin").innerText=totalWinScore; $("free").innerText=freeBet; $("chipShow").innerText=chip;
+  $("team").innerText=myTeams[cur]||"-"; $("dsTop").innerText=g.dScore; $("ksTop").innerText=g.kScore; $("dsc").innerText=g.dScore; $("ksc").innerText=g.kScore; $("dc").innerText=g.dh.length; $("kc").innerText=g.kh.length;
+  $("dlist").innerHTML=g.dh.join("<br>")||"0 user"; $("klist").innerHTML=g.kh.join("<br>")||"0 user";
+  $("estatus").innerText=myEntry[cur]? "✅ "+myTeams[cur]+" | Free:"+freeBet : "Entry nahi hui Game "+cur;
+  $("ebtn").innerText=myEntry[cur]? "HO GAYI - "+myTeams[cur]+" | Free:"+freeBet : "ENTRY 10 COIN - GAME "+cur;
+  $("wg").innerText=cur; $("bal").innerText="CHECKED | D:"+g.dScore+" (🔴🟡) K:"+g.kScore+" (🔵🟢) | "+fmt(cur==1?tMain1:tMain2);
+  if(cur==1){$("tab1").className="tab active"; $("tab2").className="tab";}else{$("tab2").className="tab active"; $("tab1").className="tab";}
+  ["red","green","blue","yellow"].forEach(c=>{let el=$(c); if(el) el.className=sel[cur].indexOf(c)>-1?"cbtn on":"cbtn";});
+  if(g.history) $("history").innerHTML=g.history.slice(-18).reverse().map(c=>"<div style='width:22px;height:22px;border-radius:50%;background:"+c+";border:2px solid #fff;margin:3px;display:inline-block'></div>").join("");
+ }catch(e){}
 }
-function setChip(n){chip=n; for(var i=1;i<=5;i++){$("chip"+i).className="chip";} $("chip"+n).className="chip on"; show();}
+function setChip(n){ chip=n; for(var i=1;i<=5;i++)$("chip"+i).className="chip"; $("chip"+n).className="chip on"; show(); }
 function pick(c){
-if(!myEntry[cur]){openWW();return;}
-if(myTeams[cur]=="TEAM DHONI" && (c=="blue"||c=="green")){pop("Team Rule","Dhoni me RED YELLOW only");return;}
-if(myTeams[cur]=="TEAM KOHLI" && (c=="red"||c=="yellow")){pop("Team Rule","Kohli me BLUE GREEN only");return;}
-var idx=sel[cur].indexOf(c); if(idx>-1) sel[cur].splice(idx,1); else{if(sel[cur].length>=2){pop("Limit","Max 2");return;} sel[cur].push(c);}show();}
-async function bet(){
-if(sel[cur].length==0){pop("Error","Color chuno");return;}
-if(!myEntry[cur]){openWW();return;}
-if(freeBet<=0){ if(coin<1){pop("Coin Kam","1 coin chahiye");return;} coin-=1; freeBet=3; }freeBet--;
-var betColors=sel[cur].slice(); var winPoint=cur==1?18*chip:37*chip;
-var cols=["red","green","blue","yellow"]; var winColor=cols[Math.floor(Math.random()*4)];
-var isWin=betColors.indexOf(winColor)>-1;
-if(isWin){ await window.updateGameScore(cur, myTeams[cur], winPoint, winColor); pop("LIVE SYNC ✅ G"+cur, "WIN! "+winColor+" - Score +"+winPoint+" sabko dikhega"); }
-else { await window.updateGameScore(cur, myTeams[cur], 0, winColor); pop("LIVE SYNC G"+cur, "Result: "+winColor); }
-sel[cur]=[]; show();
+ if(!myEntry[cur]){openWW(); return;}
+ // CHECKED RULE - Team wise color lock
+ if(myTeams[cur]=="TEAM DHONI"){
+   if(c=="blue"||c=="green"){pop("❌ Wrong Team","DHONI Team me sirf 🔴 RED aur 🟡 YELLOW chun sakte ho");return;}
+ }
+ if(myTeams[cur]=="TEAM KOHLI"){
+   if(c=="red"||c=="yellow"){pop("❌ Wrong Team","KOHLI Team me sirf 🔵 BLUE aur 🟢 GREEN chun sakte ho");return;}
+ }
+ let idx=sel[cur].indexOf(c); if(idx>-1) sel[cur].splice(idx,1); else { if(sel[cur].length>=2){pop("Limit","Max 2 color");return;} sel[cur].push(c); } show();
 }
-async function entry(){
-if(myEntry[cur]){pop("Already","Ho chuki");return;}
-if(coin<10){pop("Coin Kam","10 coin chahiye");return;}
-coin-=10; var t=Math.random()>0.5?"TEAM DHONI":"TEAM KOHLI"; myTeams[cur]=t; myEntry[cur]=true; freeBet=3;
-await window.addUserToTeam(cur,t);
-closeWW(); pop("LIVE SYNC ✅ Entry G"+cur,"Team"+cur+": "+t+" - Ab sabke phone me dikhega"); show();
+function bet(){
+ if(sel[cur].length==0){pop("Error","Color chuno pehle");return;}
+ if(!myEntry[cur]){openWW();return;}
+ // 1 COIN = 3 FREE BET - CHECKED
+ if(freeBet<=0){
+   if(coin<1){pop("Coin Kam","1 coin chahiye");return;}
+   coin-=1; freeBet=3;
+ }
+ freeBet--;
+ let cols=["red","green","blue","yellow"]; let winColor=cols[Math.floor(Math.random()*4)]; let isWin=sel[cur].indexOf(winColor)>-1; let g=cur==1?liveG1:liveG2; let addScore=cur==1?18*chip:37*chip;
+ if(isWin){
+   totalWinScore+=addScore;
+   // CHECKED - Jis team me ho usi me score add
+   if(myTeams[cur]=="TEAM DHONI"){
+     // RED/YELLOW aaya to DHONI me add
+     g.dScore+=addScore;
+     pop("WIN ✅ DHONI +"+addScore,"Color Aaya: "+winColor.toUpperCase()+"\nDhoni Score: "+g.dScore+"\nFree Left: "+freeBet+" | Coin: "+coin);
+   }else{
+     // BLUE/GREEN aaya to KOHLI me add
+     g.kScore+=addScore;
+     pop("WIN ✅ KOHLI +"+addScore,"Color Aaya: "+winColor.toUpperCase()+"\nKohli Score: "+g.kScore+"\nFree Left: "+freeBet+" | Coin: "+coin);
+   }
+ }else{ pop("LOSS","Result: "+winColor.toUpperCase()+"\nFree: "+freeBet+" | Coin: "+coin); }
+ g.history.push(winColor); sel[cur]=[]; show();
 }
-show();
+function entry(){
+ if(myEntry[cur]){pop("Already","Ho chuki");return;}
+ if(coin<10){pop("Coin Kam","10 chahiye");return;}
+ coin-=10; let t=Math.random()>0.5?"TEAM DHONI":"TEAM KOHLI"; myTeams[cur]=t; myEntry[cur]=true; freeBet=3;
+ let g=cur==1?liveG1:liveG2; if(t=="TEAM DHONI") g.dh.push((window.pidGlobal||"YOU").slice(0,8)); else g.kh.push((window.pidGlobal||"YOU").slice(0,8));
+ closeWW(); pop("ENTRY OK ✅",t+"\n🔴🟡 Dhoni | 🔵🟢 Kohli\n3 Free Bet | Coin: "+coin); show();
+}
+function addCoin(){ coin+=100; show(); pop("Added","+100 Coin\nTotal: "+coin); }
+setInterval(function(){
+ t30--; if(t30<0){t30=30; let c=["red","green","blue","yellow"][Math.floor(Math.random()*4)]; liveG1.history.push(c); } $("t30").innerText=t30;
+ t60--; if(t60<0){t60=60; let c=["red","green","blue","yellow"][Math.floor(Math.random()*4)]; liveG2.history.push(c); } $("t60").innerText=t60;
+ tMain1--; if(tMain1<=0){tMain1=900; liveG1.dScore=32; liveG1.kScore=28; myEntry[1]=false; myTeams[1]=null; pop("GAME1 CLOSE 15M","Naya Start");}
+ tMain2--; if(tMain2<=0){tMain2=1680; liveG2.dScore=27; liveG2.kScore=35; myEntry[2]=false; myTeams[2]=null; pop("GAME2 CLOSE 28M","Naya Start");}
+ let curMain=cur==1?tMain1:tMain2; $("tmain").innerText=fmt(curMain); $("wt").innerText=fmt(curMain); show();
+},1000);
+show(); setTimeout(()=>{ if($("loginPage").style.display!="none") guestLogin(); },500);
 </script>
 </body></html>
