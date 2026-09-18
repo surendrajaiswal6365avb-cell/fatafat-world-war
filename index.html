@@ -24,12 +24,11 @@
 .gBtn{background:#fff;color:#000;border:none;padding:14px 22px;border-radius:12px;font-weight:900;display:flex;align-items:center;gap:10px;font-size:14px;width:85%;max-width:320px;justify-content:center;margin:8px}
 .adBox{margin:8px;background:#111;border:1px dashed #333;border-radius:10px;height:60px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#666;flex-direction:column}
 </style>
-<!-- SIRF YE 2 LINE JODI HAI ONLINE KE LIYE -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head><body>
 <div id="loginPage"><h2 style="color:gold">FATAFAT WORLD WAR</h2><p style="color:#0f0;font-size:12px;text-align:center">✅ ONLINE FIXED<br>1 Coin=3 Bet | Server Time Sync</p><button class="gBtn" onclick="guestLogin()">👤 Guest Play</button><small id="syncStatus" style="color:#aaa;margin-top:8px">Syncing server time...</small></div>
-<div class="top"><div onclick="openMenu()" style="background:#222;width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center">☰</div><b>FATAFAT <span style="color:gold">WORLD WAR</span></b><div onclick="openWW()" style="background:gold;color:#000;padding:8px 14px;border-radius:20px;font-weight:900">LIVE</div></div>
+<div class="top"><div onclick="openMenu()" style="background:#222;width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center">☰</div><b>FATAFAT <span style="color:gold">WORLD WAR</span></b><div onclick="openWW()" style="background:gold;color:#000;padding:8px 14px;border-radius:20px;font-weight:900">LIVE <span id="onlineCount">0</span></div></div>
 <div class="tabs"><div id="tab1" onclick="switchGame(1)" class="tab active">GAME1<br>30SEC-15M-18 Score</div><div id="tab2" onclick="switchGame(2)" class="tab">GAME2<br>60SEC-28M-37 Score</div></div>
 <div class="tmr"><div>T30:<b id="t30" style="color:gold">30</b></div><div>T60:<b id="t60" style="color:gold">60</b></div><div>MAIN:<b id="tmain" style="color:#0f0">15:00</b></div><div>D:<b id="dsTop">32</b> K:<b id="ksTop">28</b></div></div>
 <div style="text-align:center;font-size:11px;color:#aaa;padding:6px;background:#111;margin:0 8px;border-radius:10px">ID:<span id="pid">FF-000</span> | Coin:<b id="coin" style="color:gold">1000</b> | Team:<b id="team">-</b> | Free:<b id="free" style="color:#0f0">3</b> | Chip:<b id="chipShow">1</b><br><span style="color:#0f0">DHONI=🔴🟡 | KOHLI=🔵🟢</span> | <span id="onlineClock" style="color:gold">Online: --:--:--</span></div>
@@ -54,7 +53,7 @@
 <div id="pop" onclick="this.style.display='none'"><div id="popBox" onclick="event.stopPropagation()"><div id="popH" style="padding:14px;text-align:center;font-weight:900;background:#2962ff;border-radius:18px 18px 0 0">Notice</div><div id="popB" style="padding:16px;text-align:center;color:#ccc;white-space:pre-line"></div><button onclick="document.getElementById('pop').style.display='none'" style="margin:0 auto 14px;display:block;background:#2962ff;border:none;padding:8px 20px;border-radius:20px;color:#fff;font-weight:900">OK</button></div></div>
 
 <script>
-// ===== ONLINE TIME SYNC FIX - TUMHARA PURANA CODE SAME HAI =====
+// ===== ONLINE TIME SYNC FIX =====
 let SERVER_OFFSET = 0;
 let SERVER_READY = false;
 async function syncServerTime(){
@@ -76,18 +75,25 @@ syncServerTime();
 function getServerTime(){ return new Date(Date.now() + SERVER_OFFSET); }
 function getServerSec(){ return Math.floor((Date.now()+SERVER_OFFSET)/1000); }
 
-// ===== SIRF ONLINE USERS KE LIYE FIREBASE JODA - BAaki tumhara code same =====
+// ===== FIREBASE - REAL CONFIG DALO YAHAN =====
+// Firebase Console > Project Settings > Web app > Config copy paste karo
 const firebaseConfig = {
-  apiKey: "AIzaSyBn5LQ8q4vK8-example",
-  authDomain: "fatafat-world-war.firebaseapp.com",
-  projectId: "fatafat-world-war",
-  storageBucket: "fatafat-world-war.appspot.com",
-  messagingSenderId: "0000000000",
-  appId: "1:0000000000:web:abc123"
+  apiKey: "AIzaSyDUMMY-REPLACE-WITH-YOUR-REAL-KEY",
+  authDomain: "fatafat-world-war-12345.firebaseapp.com",
+  projectId: "fatafat-world-war-12345",
+  storageBucket: "fatafat-world-war-12345.appspot.com",
+  messagingSenderId: "123456789012",
+  appId: "1:123456789012:web:abcd1234efgh5678"
 };
-try{ firebase.initializeApp(firebaseConfig); }catch(e){}
-const db = firebase.firestore();
-// ===== ONLINE CODE END =====
+// Agar tumhare pass config nahi hai to https://console.firebase.google.com pe jake naya project banao
+// Fir Firestore Database > Create > Test Mode > Rules: allow read, write: if true;
+
+let db = null;
+try{
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.firestore();
+  document.getElementById('syncStatus').innerText += " | DB OK";
+}catch(e){ console.log("Firebase config galat hai, apna config dalo", e); }
 
 var cur=1, coin=1000, chip=1, freeBet=3, t30=30, t60=60, tMain1=900, tMain2=1680, totalWinScore=0;
 var sel={1:[],2:[]}, myTeams={1:null,2:null}, myEntry={1:false,2:false};
@@ -96,10 +102,10 @@ function $(id){return document.getElementById(id);}
 function pop(h,m){$("popH").innerText=h; $("popB").innerText=m; $("pop").style.display="flex";}
 function openMenu(){ $("menu").style.display="block"; show(); }
 function closeMenu(){ $("menu").style.display="none"; }
-function openWW(){ $("ww").style.display="block"; show(); }
+function openWW(){ $("ww").style.display="block"; show(); if(db) listenOnline(); }
 function closeWW(){ $("ww").style.display="none"; }
 function fmt(s){var m=Math.floor(s/60),sc=s%60; return (m<10?"0"+m:m)+":"+(sc<10?"0"+sc:sc);}
-function switchGame(n){ cur=n; show(); }
+function switchGame(n){ cur=n; show(); if(db) listenOnline(); }
 function guestLogin(){
  document.getElementById("loginPage").style.display="none";
  let id = localStorage.getItem('fatafat_online_id');
@@ -112,15 +118,20 @@ function guestLogin(){
  window.pidGlobal=id;
  $("pid").innerText=id; $("mid").innerText=id; $("mName").innerText="Guest "+id.slice(-4);
  show();
- // ONLINE: user ko online mark karo
- try{ db.collection("online_users").doc(id).set({id:id,lastSeen:Date.now(),game:cur,team:myTeams[cur]||"",score:totalWinScore},{merge:true}); listenOnline(); }catch(e){}
+ if(db){
+   db.collection("online_users").doc(id).set({id:id,lastSeen:Date.now(),game:cur,team:myTeams[cur]||"",score:totalWinScore},{merge:true});
+   listenOnline();
+ }
 }
 function logout(){ localStorage.removeItem('fatafat_online_id'); location.reload(); }
 function show(){
  try{
   var g=cur==1?liveG1:liveG2;
   $("coin").innerText=coin; $("mcoin").innerText=coin; $("mfree").innerText=freeBet; $("mtotalWin").innerText=totalWinScore; $("free").innerText=freeBet; $("chipShow").innerText=chip;
-  $("team").innerText=myTeams[cur]||"-"; $("dsTop").innerText=g.dScore; $("ksTop").innerText=g.kScore; $("dsc").innerText=g.dScore; $("ksc").innerText=g.kScore; $("dc").innerText=g.dh.length; $("kc").innerText=g.kh.length;
+  $("team").innerText=myTeams[cur]||"-";
+  // Score local dikhao jab tak server se na aaye
+  $("dsTop").innerText=g.dScore; $("ksTop").innerText=g.kScore; $("dsc").innerText=g.dScore; $("ksc").innerText=g.kScore;
+  $("dc").innerText=g.dh.length; $("kc").innerText=g.kh.length;
   $("dlist").innerHTML=g.dh.join("<br>")||"0 user"; $("klist").innerHTML=g.kh.join("<br>")||"0 user";
   $("estatus").innerText=myEntry[cur]? "✅ "+myTeams[cur]+" | Free:"+freeBet : "Entry nahi hui Game "+cur;
   $("ebtn").innerText=myEntry[cur]? "HO GAYI - "+myTeams[cur]+" | Free:"+freeBet : "ENTRY 10 COIN - GAME "+cur;
@@ -148,50 +159,69 @@ function bet(){
    totalWinScore+=addScore;
    if(myTeams[cur]=="TEAM DHONI"){ g.dScore+=addScore; pop("WIN ✅ DHONI +"+addScore,"Color: "+winColor.toUpperCase()+"\nFree Left: "+freeBet); }
    else{ g.kScore+=addScore; pop("WIN ✅ KOHLI +"+addScore,"Color: "+winColor.toUpperCase()+"\nFree Left: "+freeBet); }
-   try{ db.collection("online_users").doc(window.pidGlobal).update({score:firebase.firestore.FieldValue.increment(addScore),lastSeen:Date.now()}); }catch(e){}
+   if(db){ db.collection("online_users").doc(window.pidGlobal).update({score: firebase.firestore.FieldValue.increment(addScore), lastSeen: Date.now()}); }
  }else{ pop("LOSS","Result: "+winColor.toUpperCase()+"\nFree: "+freeBet); }
  g.history.push(winColor); sel[cur]=[]; show();
 }
-function entry(){
+async function entry(){
  if(myEntry[cur]){pop("Already","Ho chuki");return;}
  if(coin<10){pop("Coin Kam","10 chahiye");return;}
  coin-=10;
- // ONLINE: barabar baantne ka logic - zero hai to random, phir khali side me
- let dhCount = (cur==1?liveG1.dh.length:liveG2.dh.length);
- let khCount = (cur==1?liveG1.kh.length:liveG2.kh.length);
- let t;
- if(dhCount==0 && khCount==0) t=Math.random()>0.5?"TEAM DHONI":"TEAM KOHLI";
- else if(dhCount < khCount) t="TEAM DHONI";
- else if(khCount < dhCount) t="TEAM KOHLI";
- else t=Math.random()>0.5?"TEAM DHONI":"TEAM KOHLI";
-
+ // SERVER SE DEKH KE BARABAR BAANTO - YAHI MAIN LOGIC HAI
+ let t = "TEAM DHONI";
+ if(db){
+   let snap = await db.collection("online_users").where("game","==",cur).get();
+   let dh=0,kh=0;
+   snap.forEach(doc=>{
+     let d=doc.data();
+     if(Date.now()-d.lastSeen>120000) return;
+     if(d.team=="TEAM DHONI") dh++;
+     if(d.team=="TEAM KOHLI") kh++;
+   });
+   if(dh==0 && kh==0) t=Math.random()>0.5?"TEAM DHONI":"TEAM KOHLI";
+   else if(dh < kh) t="TEAM DHONI";
+   else if(kh < dh) t="TEAM KOHLI";
+   else t=Math.random()>0.5?"TEAM DHONI":"TEAM KOHLI";
+ }else{
+   t=Math.random()>0.5?"TEAM DHONI":"TEAM KOHLI";
+ }
  myTeams[cur]=t; myEntry[cur]=true; freeBet=3;
- let g=cur==1?liveG1:liveG2; if(t=="TEAM DHONI") g.dh.push((window.pidGlobal||"YOU").slice(0,8)); else g.kh.push((window.pidGlobal||"YOU").slice(0,8));
- // ONLINE: Firebase me team save
- try{ db.collection("online_users").doc(window.pidGlobal).set({id:window.pidGlobal,team:t,game:cur,score:totalWinScore,lastSeen:Date.now()},{merge:true}); }catch(e){}
+ let g=cur==1?liveG1:liveG2;
+ if(t=="TEAM DHONI") g.dh.push((window.pidGlobal||"YOU").slice(0,8)); else g.kh.push((window.pidGlobal||"YOU").slice(0,8));
+ if(db){ db.collection("online_users").doc(window.pidGlobal).set({id:window.pidGlobal,team:t,game:cur,score:totalWinScore,lastSeen:Date.now()},{merge:true}); }
  closeWW(); pop("ENTRY OK ✅",t+"\n3 Free Bet | Coin: "+coin); show();
 }
 function addCoin(){ coin+=100; show(); pop("Added","+100 Coin"); }
 
-// ONLINE LISTENER - sabhi users ko dikhao Dhoni Kohli me
+// ===== YE HAI MAIN ONLINE LOGIC - SAB USERS KO DIKHAYEGA =====
+let unsub = null;
 function listenOnline(){
- try{
-  db.collection("online_users").where("game","==",cur).onSnapshot(snap=>{
-    let dh=[], kh=[], dScore=32, kScore=28;
+ if(!db) return;
+ if(unsub) unsub();
+ unsub = db.collection("online_users").where("game","==",cur).onSnapshot(snap=>{
+    let dh=[], kh=[], dScoreAdd=0, kScoreAdd=0;
     snap.forEach(doc=>{
       let d=doc.data();
-      if(Date.now()-d.lastSeen>120000) return; // 2 min purana hatao
-      if(d.team=="TEAM DHONI"){ dh.push(d.id+" ("+(d.score||0)+")"); dScore+=(d.score||0); }
-      else if(d.team=="TEAM KOHLI"){ kh.push(d.id+" ("+(d.score||0)+")"); kScore+=(d.score||0); }
+      if(Date.now()-d.lastSeen>120000) return;
+      if(d.team=="TEAM DHONI"){ dh.push(d.id+" ("+(d.score||0)+")"); dScoreAdd+=(d.score||0); }
+      else if(d.team=="TEAM KOHLI"){ kh.push(d.id+" ("+(d.score||0)+")"); kScoreAdd+=(d.score||0); }
     });
-    if(cur==1){ liveG1.dh=dh; liveG1.kh=kh; liveG1.dScore=32+dScore; liveG1.kScore=28+kScore; }
-    else { liveG2.dh=dh; liveG2.kh=kh; liveG2.dScore=27+dScore; liveG2.kScore=35+kScore; }
+    let baseD = cur==1?32:27;
+    let baseK = cur==1?28:35;
+    let finalD = baseD + dScoreAdd;
+    let finalK = baseK + kScoreAdd;
+
+    if(cur==1){ liveG1.dh=dh; liveG1.kh=kh; liveG1.dScore=finalD; liveG1.kScore=finalK; }
+    else { liveG2.dh=dh; liveG2.kh=kh; liveG2.dScore=finalD; liveG2.kScore=finalK; }
+
     $("dc").innerText=dh.length; $("kc").innerText=kh.length;
-    $("dsc").innerText=(cur==1?liveG1.dScore:liveG2.dScore); $("ksc").innerText=(cur==1?liveG1.kScore:liveG2.kScore);
-    $("dsTop").innerText=(cur==1?liveG1.dScore:liveG2.dScore); $("ksTop").innerText=(cur==1?liveG1.kScore:liveG2.kScore);
-    $("dlist").innerHTML=dh.join("<br>")||"0 user"; $("klist").innerHTML=kh.join("<br>")||"0 user";
-  });
- }catch(e){}
+    $("dsc").innerText=finalD; $("ksc").innerText=finalK;
+    $("dsTop").innerText=finalD; $("ksTop").innerText=finalK;
+    $("dlist").innerHTML=dh.join("<br>")||"0 user";
+    $("klist").innerHTML=kh.join("<br>")||"0 user";
+    $("onlineCount").innerText = dh.length+kh.length;
+    $("bal").innerText = "ONLINE SYNCED | D:"+finalD+" (🔴🟡) K:"+finalK+" (🔵🟢) | "+fmt(cur==1?tMain1:tMain2);
+ });
 }
 
 setInterval(function(){
@@ -201,12 +231,10 @@ setInterval(function(){
  let newT60 = 60 - (sec % 60); if(newT60==0) newT60=60;
  let newTMain1 = 900 - (sec % 900); if(newTMain1==0) newTMain1=900;
  let newTMain2 = 1680 - (sec % 1680); if(newTMain2==0) newTMain2=1680;
-
  if(newT30==30 && t30==1){ liveG1.history.push(["red","green","blue","yellow"][Math.floor(Math.random()*4)]); }
  if(newT60==60 && t60==1){ liveG2.history.push(["red","green","blue","yellow"][Math.floor(Math.random()*4)]); }
  if(newTMain1==900 && tMain1==1){ liveG1.dScore=32; liveG1.kScore=28; myEntry[1]=false; myTeams[1]=null; pop("GAME1 CLOSE","New Start"); }
  if(newTMain2==1680 && tMain2==1){ liveG2.dScore=27; liveG2.kScore=35; myEntry[2]=false; myTeams[2]=null; pop("GAME2 CLOSE","New Start"); }
-
  t30=newT30; t60=newT60; tMain1=newTMain1; tMain2=newTMain2;
  try{ $("t30").innerText=t30; $("t60").innerText=t60; $("tmain").innerText=fmt(cur==1?tMain1:tMain2); $("wt").innerText=fmt(cur==1?tMain1:tMain2); show(); }catch(e){}
 },1000);
