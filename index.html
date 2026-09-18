@@ -1,244 +1,189 @@
 <!DOCTYPE html>
-<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FATAFAT WORLD WAR - ONLINE FIXED</title>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FATAFAT WORLD WAR FINAL</title>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#0a0a0f;color:#fff;font-family:Arial;padding-bottom:80px}
-.top{height:58px;background:#111;display:flex;justify-content:space-between;align-items:center;padding:0 12px;border-bottom:2px solid gold;position:sticky;top:0;z-index:20}
-.tabs{display:flex;gap:8px;padding:8px;position:sticky;top:58px;z-index:19;background:#0a0a0f}
-.tab{flex:1;padding:14px;text-align:center;border-radius:12px;font-weight:900;font-size:13px;cursor:pointer;border:2px solid gold}
-#tab1{background:linear-gradient(135deg,#ff0000,#ff9800)!important;color:#fff}
-#tab2{background:linear-gradient(135deg,#0066ff,#00ff88)!important;color:#fff}
-.tab.active{box-shadow:0 0 20px #fff!important;transform:scale(1.05)}
-.tmr{display:flex;justify-content:space-around;background:#15151f;margin:8px;padding:14px;border-radius:14px;border:2px solid gold;text-align:center}
+*{box-sizing:border-box}body{margin:0;background:#0a0a0f;color:#fff;font-family:Arial}
+.top{background:#111;padding:12px;display:flex;justify-content:space-between;border-bottom:2px solid gold;position:sticky;top:0}
+.tabs{display:flex;gap:8px;padding:8px}
+.tab{flex:1;padding:12px;text-align:center;border-radius:10px;font-weight:900;border:2px solid gold;cursor:pointer}
+.tab.active{transform:scale(1.05);box-shadow:0 0 15px #fff}
+.tmr{display:flex;justify-content:space-around;background:#15151f;margin:8px;padding:12px;border-radius:10px;border:1px solid gold}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px}
-.cbtn{padding:28px;border-radius:16px;border:3px solid transparent;font-weight:900;color:#fff;font-size:15px}
-.cbtn.on{border-color:#fff;box-shadow:0 0 20px #fff}
-.bbar{display:flex;gap:8px;background:#15151f;margin:10px;padding:12px;border-radius:14px;justify-content:center;align-items:center;border:1px solid #333}
-.chip{width:40px;height:40px;border-radius:50%;background:#222;border:2px solid #555;display:flex;align-items:center;justify-content:center;font-weight:900}
-.chip.on{background:gold;color:#000;border-color:gold}
+.cbtn{padding:25px;border-radius:12px;border:3px solid transparent;font-weight:900;color:#fff}
+.cbtn.on{border-color:#fff;box-shadow:0 0 15px #fff}
+.bbar{display:flex;gap:8px;justify-content:center;background:#15151f;margin:8px;padding:10px;border-radius:10px}
+.chip{width:38px;height:38px;border-radius:50%;background:#222;border:2px solid #555;display:flex;align-items:center;justify-content:center;font-weight:900}
+.chip.on{background:gold;color:#000}
 .page{position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0a0f;display:none;z-index:50;overflow:auto}
-#pop{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;z-index:99}
-#popBox{background:#1e1e2f;width:88%;max-width:360px;border-radius:18px;border:1px solid #444}
-.teamCard{flex:1;padding:12px;border-radius:16px;border:2px solid rgba(255,255,255,0.2)}
-#loginPage{position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0a0f;display:flex;align-items:center;justify-content:center;z-index:200;flex-direction:column}
-.gBtn{background:#fff;color:#000;border:none;padding:14px 22px;border-radius:12px;font-weight:900;display:flex;align-items:center;gap:10px;font-size:14px;width:85%;max-width:320px;justify-content:center;margin:8px}
-.adBox{margin:8px;background:#111;border:1px dashed #333;border-radius:10px;height:60px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#666;flex-direction:column}
+#pop{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:none;align-items:center;justify-content:center;z-index:99}
+#popBox{background:#1e1e2f;width:85%;max-width:360px;border-radius:15px;border:1px solid #444}
+#login{position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0a0f;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100}
 </style>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-</head><body>
-<div id="loginPage"><h2 style="color:gold">FATAFAT WORLD WAR</h2><p style="color:#0f0;font-size:12px;text-align:center">✅ ONLINE FIXED<br>1 Coin=3 Bet | Server Time Sync</p><button class="gBtn" onclick="guestLogin()">👤 Guest Play</button><small id="syncStatus" style="color:#aaa;margin-top:8px">Syncing server time...</small></div>
-<div class="top"><div onclick="openMenu()" style="background:#222;width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center">☰</div><b>FATAFAT <span style="color:gold">WORLD WAR</span></b><div onclick="openWW()" style="background:gold;color:#000;padding:8px 14px;border-radius:20px;font-weight:900">LIVE <span id="onlineCount">0</span></div></div>
-<div class="tabs"><div id="tab1" onclick="switchGame(1)" class="tab active">GAME1<br>30SEC-15M-18 Score</div><div id="tab2" onclick="switchGame(2)" class="tab">GAME2<br>60SEC-28M-37 Score</div></div>
-<div class="tmr"><div>T30:<b id="t30" style="color:gold">30</b></div><div>T60:<b id="t60" style="color:gold">60</b></div><div>MAIN:<b id="tmain" style="color:#0f0">15:00</b></div><div>D:<b id="dsTop">32</b> K:<b id="ksTop">28</b></div></div>
-<div style="text-align:center;font-size:11px;color:#aaa;padding:6px;background:#111;margin:0 8px;border-radius:10px">ID:<span id="pid">FF-000</span> | Coin:<b id="coin" style="color:gold">1000</b> | Team:<b id="team">-</b> | Free:<b id="free" style="color:#0f0">3</b> | Chip:<b id="chipShow">1</b><br><span style="color:#0f0">DHONI=🔴🟡 | KOHLI=🔵🟢</span> | <span id="onlineClock" style="color:gold">Online: --:--:--</span></div>
-<div class="grid"><button id="red" onclick="pick('red')" class="cbtn" style="background:#e53935">🔴 RED - DHONI</button><button id="green" onclick="pick('green')" class="cbtn" style="background:#43a047">🟢 GREEN - KOHLI</button><button id="blue" onclick="pick('blue')" class="cbtn" style="background:#1e88e5">🔵 BLUE - KOHLI</button><button id="yellow" onclick="pick('yellow')" class="cbtn" style="background:#fdd835;color:#000">🟡 YELLOW - DHONI</button></div>
-<div class="bbar"><div id="chip1" onclick="setChip(1)" class="chip on">1</div><div id="chip2" onclick="setChip(2)" class="chip">2</div><div id="chip3" onclick="setChip(3)" class="chip">3</div><div id="chip4" onclick="setChip(4)" class="chip">4</div><div id="chip5" onclick="setChip(5)" class="chip">5</div><button onclick="bet()" style="background:#00c853;border:none;padding:12px 22px;border-radius:12px;color:#fff;font-weight:900">PLAY</button></div>
-<div id="adMain" class="adBox"><span>🎯 AD 1 - Main Game 320x50</span><small>Final Fixed</small></div>
-<div id="history" style="margin:10px;background:#111;border:1px solid #333;border-radius:12px;padding:10px;min-height:44px;display:flex;gap:6px;overflow-x:auto"></div>
+</head>
+<body>
 
-<div id="menu" class="page"><div style="padding:12px;background:#111;display:flex;justify-content:space-between"><b>PROFILE</b><span onclick="closeMenu()" style="background:#222;padding:6px 12px;border-radius:8px">✕ Close</span></div>
-<div style="background:linear-gradient(135deg,#1e1e2f,#2a2a4a);padding:20px;margin:10px;border-radius:16px;border:2px solid gold;text-align:center"><div id="mName" style="font-size:18px;font-weight:900;color:gold">Guest</div><div id="mid" style="font-size:12px;color:#aaa">FF-000</div><div style="margin-top:12px;display:flex;gap:10px;justify-content:center"><div style="background:#111;padding:10px 16px;border-radius:12px"><small>COIN</small><br><b id="mcoin" style="color:gold">1000</b></div><div style="background:#111;padding:10px 16px;border-radius:12px"><small>FREE</small><br><b id="mfree" style="color:#0f0">3</b></div><div style="background:#111;padding:10px 16px;border-radius:12px"><small>SCORE</small><br><b id="mtotalWin" style="color:#0f0">0</b></div></div></div>
-<div style="padding:10px;display:grid;grid-template-columns:1fr 1fr;gap:10px"><button onclick="addCoin()" style="background:gold;border:none;padding:14px;border-radius:12px;color:#000;font-weight:900">+ ADD 100 COIN</button><button onclick="logout()" style="background:#e53935;border:none;padding:14px;border-radius:12px;color:#fff;font-weight:900">LOGOUT</button></div>
+<div id="login"><h2 style="color:gold">FATAFAT WORLD WAR</h2><p style="color:#0f0;font-size:12px;text-align:center">FINAL VERSION<br>30S=14M=18Coin | 60S=28M=38Coin</p><button onclick="start()" style="padding:12px 25px;border-radius:10px;font-weight:900">👤 PLAY NOW</button><small id="st" style="color:#888;margin-top:10px">Connecting...</small></div>
+
+<div class="top"><div onclick="document.getElementById('menu').style.display='block'">☰</div><b>FATAFAT <span style="color:gold">WORLD WAR</span></b><div onclick="document.getElementById('war').style.display='block'">LIVE</div></div>
+
+<div class="tabs">
+<div id="t1" onclick="cur=1;upd()" class="tab active" style="background:#ff3300">GAME1<br>30SEC-14M</div>
+<div id="t2" onclick="cur=2;upd()" class="tab" style="background:#0066ff">GAME2<br>60SEC-28M</div>
 </div>
 
-<div id="ww" class="page"><div style="padding:12px;background:#111;display:flex;justify-content:space-between"><span onclick="closeWW()" style="background:#222;padding:6px 12px;border-radius:8px">← Back</span><b>GAME <span id="wg">1</span></b><span id="wt">15:00</span></div>
-<div style="padding:10px"><div id="bal" style="background:#1a1a1f;border:2px solid gold;padding:12px;border-radius:12px;color:gold;font-weight:900;text-align:center">LIVE SCORE - ONLINE SYNCED</div></div>
+<div class="tmr">
+<div>T30:<b id="tt30">30</b></div>
+<div>T60:<b id="tt60">60</b></div>
+<div>MAIN:<b id="ttmain">14:00</b></div>
+<div>D:<b id="dtop">32</b> K:<b id="ktop">28</b></div>
+</div>
+
+<div style="text-align:center;font-size:11px;background:#111;margin:5px;padding:5px;border-radius:8px">
+ID:<span id="myid">-</span> | Coin:<b id="mycoin" style="color:gold">1000</b> | Team:<b id="myteam">-</b> | Free:<b id="myfree">3</b> | Chip:<b id="mychip">1</b><br>
+<span id="online">0 Users Online</span>
+</div>
+
+<div class="grid">
+<button id="red" onclick="pick('red')" class="cbtn" style="background:#e53935">🔴 RED</button>
+<button id="green" onclick="pick('green')" class="cbtn" style="background:#43a047">🟢 GREEN</button>
+<button id="blue" onclick="pick('blue')" class="cbtn" style="background:#1e88e5">🔵 BLUE</button>
+<button id="yellow" onclick="pick('yellow')" class="cbtn" style="background:#fdd835;color:#000">🟡 YELLOW</button>
+</div>
+
+<div class="bbar">
+<div id="c1" onclick="chip=1;chipUpd()" class="chip on">1</div>
+<div id="c2" onclick="chip=2;chipUpd()" class="chip">2</div>
+<div id="c3" onclick="chip=3;chipUpd()" class="chip">3</div>
+<div id="c4" onclick="chip=4;chipUpd()" class="chip">4</div>
+<div id="c5" onclick="chip=5;chipUpd()" class="chip">5</div>
+<button onclick="play()" style="background:#00c853;border:none;padding:10px 20px;border-radius:10px;color:#fff;font-weight:900">PLAY</button>
+</div>
+
+<div id="hist" style="margin:8px;background:#111;padding:8px;border-radius:10px;display:flex;gap:5px;overflow:auto;min-height:40px"></div>
+
+<div id="menu" class="page"><div style="padding:10px;background:#111;display:flex;justify-content:space-between"><b>REAL USERS</b><span onclick="this.parentElement.parentElement.style.display='none'" style="background:#222;padding:5px 10px;border-radius:5px">X</span></div><div id="userlist" style="padding:10px;font-size:12px"></div></div>
+
+<div id="war" class="page"><div style="padding:10px;background:#111;display:flex;justify-content:space-between"><span onclick="this.parentElement.parentElement.style.display='none'">← Back</span><b>GAME <span id="wg">1</span></b><span id="wt">14:00</span></div>
 <div style="display:flex;gap:8px;padding:8px">
-<div class="teamCard" style="background:linear-gradient(135deg,#c62828,#ff6f00)"><div style="text-align:center">DHONI TEAM<br>🔴🟡<br>SCORE: <b id="dsc" style="font-size:30px;color:yellow">32</b><br>USERS: <b id="dc">0</b></div><div id="dlist" style="background:rgba(0,0,0,0.4);padding:6px;border-radius:8px;margin-top:8px;max-height:150px;overflow:auto;font-size:11px"></div></div>
-<div class="teamCard" style="background:linear-gradient(135deg,#1565c0,#00c853)"><div style="text-align:center">KOHLI TEAM<br>🔵🟢<br>SCORE: <b id="ksc" style="font-size:30px;color:yellow">28</b><br>USERS: <b id="kc">0</b></div><div id="klist" style="background:rgba(0,0,0,0.4);padding:6px;border-radius:8px;margin-top:8px;max-height:150px;overflow:auto;font-size:11px"></div></div>
+<div style="flex:1;background:#c62828;padding:10px;border-radius:10px;text-align:center">DHONI<br>SCORE:<b id="dsc" style="font-size:28px;color:yellow">32</b><br><div id="dlist" style="font-size:10px;text-align:left;background:rgba(0,0,0,0.3);padding:5px;border-radius:5px;max-height:200px;overflow:auto"></div></div>
+<div style="flex:1;background:#1565c0;padding:10px;border-radius:10px;text-align:center">KOHLI<br>SCORE:<b id="ksc" style="font-size:28px;color:yellow">28</b><br><div id="klist" style="font-size:10px;text-align:left;background:rgba(0,0,0,0.3);padding:5px;border-radius:5px;max-height:200px;overflow:auto"></div></div>
 </div>
-<div style="text-align:center;padding:12px"><div id="estatus">Entry nahi hui</div><button id="ebtn" onclick="entry()" style="width:98%;padding:16px;background:gold;color:#000;font-weight:900;border-radius:14px;border:none;margin-top:12px">ENTRY 10 COIN</button></div></div>
+<div style="text-align:center;padding:10px"><div id="estatus">Entry nahi hui</div><button id="ebtn" onclick="doEntry()" style="width:95%;padding:15px;background:gold;color:#000;font-weight:900;border-radius:10px;border:none;margin-top:10px">ENTRY 10 COIN</button></div>
+</div>
 
-<div id="pop" onclick="this.style.display='none'"><div id="popBox" onclick="event.stopPropagation()"><div id="popH" style="padding:14px;text-align:center;font-weight:900;background:#2962ff;border-radius:18px 18px 0 0">Notice</div><div id="popB" style="padding:16px;text-align:center;color:#ccc;white-space:pre-line"></div><button onclick="document.getElementById('pop').style.display='none'" style="margin:0 auto 14px;display:block;background:#2962ff;border:none;padding:8px 20px;border-radius:20px;color:#fff;font-weight:900">OK</button></div></div>
+<div id="pop" onclick="this.style.display='none'"><div id="popBox" onclick="event.stopPropagation()"><div id="popH" style="padding:12px;text-align:center;font-weight:900;background:#2962ff;border-radius:15px 15px 0 0">Notice</div><div id="popB" style="padding:15px;text-align:center;white-space:pre-line;font-size:13px"></div><button onclick="document.getElementById('pop').style.display='none'" style="display:block;margin:0 auto 12px;background:#2962ff;border:none;padding:8px 20px;border-radius:15px;color:#fff">OK</button></div></div>
 
 <script>
-// ===== ONLINE TIME SYNC FIX =====
-let SERVER_OFFSET = 0;
-let SERVER_READY = false;
-async function syncServerTime(){
- try{
-   let res = await fetch('https://worldtimeapi.org/api/timezone/Asia/Kolkata');
-   let data = await res.json();
-   SERVER_OFFSET = new Date(data.datetime).getTime() - Date.now();
-   SERVER_READY = true;
-   document.getElementById('syncStatus').innerText = "✅ Online Time Synced: "+new Date(data.datetime).toLocaleTimeString();
- }catch(e){
-   try{
-     let res2 = await fetch('https://timeapi.io/api/Time/current/zone?timeZone=Asia/Kolkata').then(r=>r.json());
-     SERVER_OFFSET = new Date(res2.dateTime).getTime() - Date.now();
-     SERVER_READY = true;
-   }catch(e2){ SERVER_READY = true; SERVER_OFFSET=0; }
- }
-}
-syncServerTime();
-function getServerTime(){ return new Date(Date.now() + SERVER_OFFSET); }
-function getServerSec(){ return Math.floor((Date.now()+SERVER_OFFSET)/1000); }
+const firebaseConfig={apiKey:"AIzaSyAWlPctX9RmB8s5rHO02KBTst76vIsCaxM",authDomain:"fatafat-world-war.firebaseapp.com",projectId:"fatafat-world-war",storageBucket:"fatafat-world-war.firebasestorage.app",messagingSenderId:"466173462905",appId:"1:466173462905:web:dc2a57c56d1d348599c7a8"};
+firebase.initializeApp(firebaseConfig);const db=firebase.firestore();
+let offset=0,ready=false,cur=1,coin=1000,chip=1,freeBet=3,total=0,t30=30,t60=60,tm1=840,tm2=1680;
+let sel={1:[],2:[]},myTeam={1:null,2:null},myEntry={1:false,2:false};
+let G1={d:32,k:28,dh:[],kh:[],hist:[]},G2={d:27,k:35,dh:[],kh:[],hist:[]};
+let myId=null;
 
-// ===== FIREBASE - REAL CONFIG DALO YAHAN =====
-// Firebase Console > Project Settings > Web app > Config copy paste karo
-const firebaseConfig = {
-  apiKey: "AIzaSyDUMMY-REPLACE-WITH-YOUR-REAL-KEY",
-  authDomain: "fatafat-world-war-12345.firebaseapp.com",
-  projectId: "fatafat-world-war-12345",
-  storageBucket: "fatafat-world-war-12345.appspot.com",
-  messagingSenderId: "123456789012",
-  appId: "1:123456789012:web:abcd1234efgh5678"
-};
-// Agar tumhare pass config nahi hai to https://console.firebase.google.com pe jake naya project banao
-// Fir Firestore Database > Create > Test Mode > Rules: allow read, write: if true;
+async function sync(){try{let r=await fetch('https://worldtimeapi.org/api/timezone/Asia/Kolkata');let j=await r.json();offset=new Date(j.datetime).getTime()-Date.now();ready=true;document.getElementById('st').innerText="✅ Connected";}catch(e){ready=true;}}
+sync();
+function secNow(){return Math.floor((Date.now()+offset)/1000);}
+function $(i){return document.getElementById(i);}
+function popUp(h,m){$('popH').innerText=h;$('popB').innerText=m;$('pop').style.display='flex';}
+function fmt(s){let m=Math.floor(s/60),sc=s%60;return (m<10?"0"+m:m)+":"+(sc<10?"0"+sc:sc);}
 
-let db = null;
-try{
-  firebase.initializeApp(firebaseConfig);
-  db = firebase.firestore();
-  document.getElementById('syncStatus').innerText += " | DB OK";
-}catch(e){ console.log("Firebase config galat hai, apna config dalo", e); }
+function start(){
+ let id=localStorage.getItem('ff_id');if(!id){id="FF-"+Math.floor(100000+Math.random()*900000);localStorage.setItem('ff_id',id);}
+ myId=id;coin=parseInt(localStorage.getItem('ff_coin')||"1000");total=parseInt(localStorage.getItem('ff_total')||"0");
+ $('myid').innerText=id;$('login').style.display='none';
+ db.collection("users").doc(id).set({id:id,score:total,coin:coin,team:null,game:1,online:true},{merge:true});
+ listen();upd();
+}
 
-var cur=1, coin=1000, chip=1, freeBet=3, t30=30, t60=60, tMain1=900, tMain2=1680, totalWinScore=0;
-var sel={1:[],2:[]}, myTeams={1:null,2:null}, myEntry={1:false,2:false};
-var liveG1={dScore:32,kScore:28,dh:[],kh:[],history:[]}, liveG2={dScore:27,kScore:35,dh:[],kh:[],history:[]};
-function $(id){return document.getElementById(id);}
-function pop(h,m){$("popH").innerText=h; $("popB").innerText=m; $("pop").style.display="flex";}
-function openMenu(){ $("menu").style.display="block"; show(); }
-function closeMenu(){ $("menu").style.display="none"; }
-function openWW(){ $("ww").style.display="block"; show(); if(db) listenOnline(); }
-function closeWW(){ $("ww").style.display="none"; }
-function fmt(s){var m=Math.floor(s/60),sc=s%60; return (m<10?"0"+m:m)+":"+(sc<10?"0"+sc:sc);}
-function switchGame(n){ cur=n; show(); if(db) listenOnline(); }
-function guestLogin(){
- document.getElementById("loginPage").style.display="none";
- let id = localStorage.getItem('fatafat_online_id');
- if(!id){
-   id="FF-"+Math.floor(100000+Math.random()*900000);
-   localStorage.setItem('fatafat_online_id',id);
- }
- let urlId = new URLSearchParams(location.search).get('id') || new URLSearchParams(location.search).get('pid');
- if(urlId){ id=urlId; localStorage.setItem('fatafat_online_id',id); }
- window.pidGlobal=id;
- $("pid").innerText=id; $("mid").innerText=id; $("mName").innerText="Guest "+id.slice(-4);
- show();
- if(db){
-   db.collection("online_users").doc(id).set({id:id,lastSeen:Date.now(),game:cur,team:myTeams[cur]||"",score:totalWinScore},{merge:true});
-   listenOnline();
- }
-}
-function logout(){ localStorage.removeItem('fatafat_online_id'); location.reload(); }
-function show(){
- try{
-  var g=cur==1?liveG1:liveG2;
-  $("coin").innerText=coin; $("mcoin").innerText=coin; $("mfree").innerText=freeBet; $("mtotalWin").innerText=totalWinScore; $("free").innerText=freeBet; $("chipShow").innerText=chip;
-  $("team").innerText=myTeams[cur]||"-";
-  // Score local dikhao jab tak server se na aaye
-  $("dsTop").innerText=g.dScore; $("ksTop").innerText=g.kScore; $("dsc").innerText=g.dScore; $("ksc").innerText=g.kScore;
-  $("dc").innerText=g.dh.length; $("kc").innerText=g.kh.length;
-  $("dlist").innerHTML=g.dh.join("<br>")||"0 user"; $("klist").innerHTML=g.kh.join("<br>")||"0 user";
-  $("estatus").innerText=myEntry[cur]? "✅ "+myTeams[cur]+" | Free:"+freeBet : "Entry nahi hui Game "+cur;
-  $("ebtn").innerText=myEntry[cur]? "HO GAYI - "+myTeams[cur]+" | Free:"+freeBet : "ENTRY 10 COIN - GAME "+cur;
-  $("wg").innerText=cur; $("bal").innerText="ONLINE SYNCED | D:"+g.dScore+" (🔴🟡) K:"+g.kScore+" (🔵🟢) | "+fmt(cur==1?tMain1:tMain2);
-  if(cur==1){$("tab1").className="tab active"; $("tab2").className="tab";}else{$("tab2").className="tab active"; $("tab1").className="tab";}
-  ["red","green","blue","yellow"].forEach(c=>{let el=$(c); if(el) el.className=sel[cur].indexOf(c)>-1?"cbtn on":"cbtn";});
-  if(g.history) $("history").innerHTML=g.history.slice(-18).reverse().map(c=>"<div style='width:22px;height:22px;border-radius:50%;background:"+c+";border:2px solid #fff;margin:3px;display:inline-block'></div>").join("");
-  $("onlineClock").innerText = "Online: "+getServerTime().toLocaleTimeString();
- }catch(e){}
-}
-function setChip(n){ chip=n; for(var i=1;i<=5;i++)$("chip"+i).className="chip"; $("chip"+n).className="chip on"; show(); }
-function pick(c){
- if(!myEntry[cur]){openWW(); return;}
- if(myTeams[cur]=="TEAM DHONI"){ if(c=="blue"||c=="green"){pop("❌ Wrong Team","DHONI Team me sirf 🔴 RED aur 🟡 YELLOW");return;} }
- if(myTeams[cur]=="TEAM KOHLI"){ if(c=="red"||c=="yellow"){pop("❌ Wrong Team","KOHLI Team me sirf 🔵 BLUE aur 🟢 GREEN");return;} }
- let idx=sel[cur].indexOf(c); if(idx>-1) sel[cur].splice(idx,1); else { if(sel[cur].length>=2){pop("Limit","Max 2 color");return;} sel[cur].push(c); } show();
-}
-function bet(){
- if(sel[cur].length==0){pop("Error","Color chuno pehle");return;}
- if(!myEntry[cur]){openWW();return;}
- if(freeBet<=0){ if(coin<1){pop("Coin Kam","1 coin chahiye");return;} coin-=1; freeBet=3; }
- freeBet--;
- let cols=["red","green","blue","yellow"]; let winColor=cols[Math.floor(Math.random()*4)]; let isWin=sel[cur].indexOf(winColor)>-1; let g=cur==1?liveG1:liveG2; let addScore=cur==1?18*chip:37*chip;
- if(isWin){
-   totalWinScore+=addScore;
-   if(myTeams[cur]=="TEAM DHONI"){ g.dScore+=addScore; pop("WIN ✅ DHONI +"+addScore,"Color: "+winColor.toUpperCase()+"\nFree Left: "+freeBet); }
-   else{ g.kScore+=addScore; pop("WIN ✅ KOHLI +"+addScore,"Color: "+winColor.toUpperCase()+"\nFree Left: "+freeBet); }
-   if(db){ db.collection("online_users").doc(window.pidGlobal).update({score: firebase.firestore.FieldValue.increment(addScore), lastSeen: Date.now()}); }
- }else{ pop("LOSS","Result: "+winColor.toUpperCase()+"\nFree: "+freeBet); }
- g.history.push(winColor); sel[cur]=[]; show();
-}
-async function entry(){
- if(myEntry[cur]){pop("Already","Ho chuki");return;}
- if(coin<10){pop("Coin Kam","10 chahiye");return;}
- coin-=10;
- // SERVER SE DEKH KE BARABAR BAANTO - YAHI MAIN LOGIC HAI
- let t = "TEAM DHONI";
- if(db){
-   let snap = await db.collection("online_users").where("game","==",cur).get();
-   let dh=0,kh=0;
-   snap.forEach(doc=>{
-     let d=doc.data();
-     if(Date.now()-d.lastSeen>120000) return;
-     if(d.team=="TEAM DHONI") dh++;
-     if(d.team=="TEAM KOHLI") kh++;
+function listen(){
+ db.collection("users").where("online","==",true).onSnapshot(s=>{
+   let html="",g1d=[],g1k=[],g2d=[],g2k=[],d1=32,k1=28,d2=27,k2=35;
+   s.forEach(doc=>{
+     let u=doc.data();let me=u.id==myId?" (YOU)":"";
+     html+=`<div style="padding:6px;border-bottom:1px solid #222;display:flex;justify-content:space-between"><span>${u.id}${me}</span><span style="color:gold">${u.score||0}pts | ${u.coin||0}C</span><span>${u.team||'No Team'} G${u.game||1}</span></div>`;
+     if((u.game||1)==1){if(u.team=="TEAM DHONI"){g1d.push(u.id.slice(-4)+" - "+(u.score||0));d1+=(u.score||0);}if(u.team=="TEAM KOHLI"){g1k.push(u.id.slice(-4)+" - "+(u.score||0));k1+=(u.score||0);}}
+     else{if(u.team=="TEAM DHONI"){g2d.push(u.id.slice(-4)+" - "+(u.score||0));d2+=(u.score||0);}if(u.team=="TEAM KOHLI"){g2k.push(u.id.slice(-4)+" - "+(u.score||0));k2+=(u.score||0);}}
    });
-   if(dh==0 && kh==0) t=Math.random()>0.5?"TEAM DHONI":"TEAM KOHLI";
-   else if(dh < kh) t="TEAM DHONI";
-   else if(kh < dh) t="TEAM KOHLI";
-   else t=Math.random()>0.5?"TEAM DHONI":"TEAM KOHLI";
- }else{
-   t=Math.random()>0.5?"TEAM DHONI":"TEAM KOHLI";
- }
- myTeams[cur]=t; myEntry[cur]=true; freeBet=3;
- let g=cur==1?liveG1:liveG2;
- if(t=="TEAM DHONI") g.dh.push((window.pidGlobal||"YOU").slice(0,8)); else g.kh.push((window.pidGlobal||"YOU").slice(0,8));
- if(db){ db.collection("online_users").doc(window.pidGlobal).set({id:window.pidGlobal,team:t,game:cur,score:totalWinScore,lastSeen:Date.now()},{merge:true}); }
- closeWW(); pop("ENTRY OK ✅",t+"\n3 Free Bet | Coin: "+coin); show();
-}
-function addCoin(){ coin+=100; show(); pop("Added","+100 Coin"); }
-
-// ===== YE HAI MAIN ONLINE LOGIC - SAB USERS KO DIKHAYEGA =====
-let unsub = null;
-function listenOnline(){
- if(!db) return;
- if(unsub) unsub();
- unsub = db.collection("online_users").where("game","==",cur).onSnapshot(snap=>{
-    let dh=[], kh=[], dScoreAdd=0, kScoreAdd=0;
-    snap.forEach(doc=>{
-      let d=doc.data();
-      if(Date.now()-d.lastSeen>120000) return;
-      if(d.team=="TEAM DHONI"){ dh.push(d.id+" ("+(d.score||0)+")"); dScoreAdd+=(d.score||0); }
-      else if(d.team=="TEAM KOHLI"){ kh.push(d.id+" ("+(d.score||0)+")"); kScoreAdd+=(d.score||0); }
-    });
-    let baseD = cur==1?32:27;
-    let baseK = cur==1?28:35;
-    let finalD = baseD + dScoreAdd;
-    let finalK = baseK + kScoreAdd;
-
-    if(cur==1){ liveG1.dh=dh; liveG1.kh=kh; liveG1.dScore=finalD; liveG1.kScore=finalK; }
-    else { liveG2.dh=dh; liveG2.kh=kh; liveG2.dScore=finalD; liveG2.kScore=finalK; }
-
-    $("dc").innerText=dh.length; $("kc").innerText=kh.length;
-    $("dsc").innerText=finalD; $("ksc").innerText=finalK;
-    $("dsTop").innerText=finalD; $("ksTop").innerText=finalK;
-    $("dlist").innerHTML=dh.join("<br>")||"0 user";
-    $("klist").innerHTML=kh.join("<br>")||"0 user";
-    $("onlineCount").innerText = dh.length+kh.length;
-    $("bal").innerText = "ONLINE SYNCED | D:"+finalD+" (🔴🟡) K:"+finalK+" (🔵🟢) | "+fmt(cur==1?tMain1:tMain2);
+   G1.dh=g1d;G1.kh=g1k;G1.d=d1;G1.k=k1;G2.dh=g2d;G2.kh=g2k;G2.d=d2;G2.k=k2;
+   $('userlist').innerHTML=html||"No users";$('online').innerText=s.size+" REAL USERS ONLINE - ID+Score ek sath";
+   upd();
  });
 }
 
-setInterval(function(){
- if(!SERVER_READY) return;
- let sec = getServerSec();
- let newT30 = 30 - (sec % 30); if(newT30==0) newT30=30;
- let newT60 = 60 - (sec % 60); if(newT60==0) newT60=60;
- let newTMain1 = 900 - (sec % 900); if(newTMain1==0) newTMain1=900;
- let newTMain2 = 1680 - (sec % 1680); if(newTMain2==0) newTMain2=1680;
- if(newT30==30 && t30==1){ liveG1.history.push(["red","green","blue","yellow"][Math.floor(Math.random()*4)]); }
- if(newT60==60 && t60==1){ liveG2.history.push(["red","green","blue","yellow"][Math.floor(Math.random()*4)]); }
- if(newTMain1==900 && tMain1==1){ liveG1.dScore=32; liveG1.kScore=28; myEntry[1]=false; myTeams[1]=null; pop("GAME1 CLOSE","New Start"); }
- if(newTMain2==1680 && tMain2==1){ liveG2.dScore=27; liveG2.kScore=35; myEntry[2]=false; myTeams[2]=null; pop("GAME2 CLOSE","New Start"); }
- t30=newT30; t60=newT60; tMain1=newTMain1; tMain2=newTMain2;
- try{ $("t30").innerText=t30; $("t60").innerText=t60; $("tmain").innerText=fmt(cur==1?tMain1:tMain2); $("wt").innerText=fmt(cur==1?tMain1:tMain2); show(); }catch(e){}
+function upd(){
+ try{
+  let G=cur==1?G1:G2;
+  $('mycoin').innerText=coin;$('myfree').innerText=freeBet;$('myteam').innerText=myTeam[cur]||"-";
+  $('dtop').innerText=G.d;$('ktop').innerText=G.k;$('dsc').innerText=G.d;$('ksc').innerText=G.k;
+  $('dlist').innerHTML=G.dh.join("<br>")||"0 user";$('klist').innerHTML=G.kh.join("<br>")||"0 user";
+  $('estatus').innerText=myEntry[cur]?"✅ "+myTeam[cur]+" | Free:"+freeBet:"Entry nahi hui G"+cur;
+  $('ebtn').innerText=myEntry[cur]?"HO GAYI - "+myTeam[cur]:"ENTRY 10 COIN - GAME "+cur;
+  $('wg').innerText=cur;$('t1').className=cur==1?"tab active":"tab";$('t2').className=cur==2?"tab active":"tab";
+  ['red','green','blue','yellow'].forEach(c=>{let e=$(c);if(e) e.className=sel[cur].includes(c)?"cbtn on":"cbtn";});
+  if(G.hist) $('hist').innerHTML=G.hist.slice(-20).reverse().map(c=>`<div style="width:20px;height:20px;border-radius:50%;background:${c};border:2px solid #fff;display:inline-block;margin:2px"></div>`).join("");
+ }catch(e){}
+}
+function chipUpd(){for(let i=1;i<=5;i++){$('c'+i).className="chip";}$('c'+chip).className="chip on";$('mychip').innerText=chip;upd();}
+
+function pick(c){
+ if(!myEntry[cur]){$('war').style.display='block';return;}
+ if(myTeam[cur]=="TEAM DHONI" && (c=="blue"||c=="green")){popUp("❌ Wrong","DHONI me sirf RED YELLOW");return;}
+ if(myTeam[cur]=="TEAM KOHLI" && (c=="red"||c=="yellow")){popUp("❌ Wrong","KOHLI me BLUE GREEN");return;}
+ let idx=sel[cur].indexOf(c);if(idx>-1)sel[cur].splice(idx,1);else{if(sel[cur].length>=2){popUp("Limit","Max 2");return;}sel[cur].push(c);}upd();
+}
+
+function play(){
+ if(sel[cur].length==0){popUp("Error","Color chuno");return;}
+ if(!myEntry[cur]){$('war').style.display='block';return;}
+ if(freeBet<=0){if(coin<1){popUp("Coin Kam","1 chahiye");return;}coin-=1;freeBet=3;localStorage.setItem('ff_coin',coin);}
+ freeBet--;
+ let cols=["red","green","blue","yellow"];let win=cols[Math.floor(Math.random()*4)];let isWin=sel[cur].includes(win);
+ let add=cur==1?18*chip:38*chip;
+ if(isWin){total+=add;localStorage.setItem('ff_total',total);popUp("WIN ✅ +"+add,"ID: "+myId+"\nScore: "+total+"\nColor: "+win);db.collection("users").doc(myId).update({score:total,coin:coin});}
+ else{popUp("LOSS","Result: "+win.toUpperCase()+"\nID: "+myId);}
+ if(cur==1)G1.hist.push(win);else G2.hist.push(win);sel[cur]=[];upd();
+}
+
+function doEntry(){
+ if(myEntry[cur]){popUp("Already","Ho chuki");return;}
+ if(coin<10){popUp("Coin Kam","10 chahiye");return;}
+ coin-=10;localStorage.setItem('ff_coin',coin);
+ let t=Math.random()>0.5?"TEAM DHONI":"TEAM KOHLI";myTeam[cur]=t;myEntry[cur]=true;freeBet=3;
+ db.collection("users").doc(myId).update({team:t,game:cur,coin:coin,score:total,online:true});
+ $('war').style.display='none';popUp("ENTRY OK ✅",t+"\nID: "+myId+"\n3 Free Bet");upd();
+}
+
+function closeGame(num){
+ let G=num==1?G1:G2;let min=num==1?"14 MIN":"28 MIN";let winCoin=num==1?18:38;
+ let winTeam=G.d>G.k?"TEAM DHONI":G.k>G.d?"TEAM KOHLI":"DRAW";
+ let winSc=G.d>G.k?G.d:G.k;let loseSc=G.d>G.k?G.k:G.d;let loseTeam=winTeam=="TEAM DHONI"?"TEAM KOHLI":"TEAM DHONI";
+ let msg=`🏆 GAME ${num} CLOSE - ${min}\n\nDHONI 🔴🟡 : ${G.d} Score\nKOHLI 🔵🟢 : ${G.k} Score\n\nWINNER: ${winTeam} - ${winSc}\nLOSER: ${loseTeam} - ${loseSc}\n\n🍬 Toffee + ${winCoin} Coin Har Winner Ko\n${winTeam==myTeam[num]?"✅ TUM JEETE - "+winCoin+" Coin!":"❌ Tum Haare"}\n\nID: ${myId}\nSab bahar - Fir se ENTRY lo`;
+ popUp(`🏆 GAME ${num} RESULT - ${min}`,msg);
+ db.collection("users").where("game","==",num).get().then(s=>{s.forEach(d=>{let u=d.data();if(u.team==winTeam){db.collection("users").doc(d.id).update({team:null,coin:firebase.firestore.FieldValue.increment(winCoin)});}else{db.collection("users").doc(d.id).update({team:null});}});});
+ G.d=num==1?32:27;G.k=num==1?28:35;G.hist=[];myEntry[num]=false;myTeam[num]=null;if(cur==num)sel[num]=[];
+ if(winTeam==myTeam[num]){coin+=winCoin;localStorage.setItem('ff_coin',coin);setTimeout(()=>{popUp(`🏆 +${winCoin} COIN!`,`${winTeam} Winner!\nGame ${num} - ${min}\nHar user ko ${winCoin} Coin`);upd();},1200);}
+ upd();
+}
+
+setInterval(()=>{
+ if(!ready) return;let sec=secNow();
+ let n30=30-(sec%30);if(n30==0)n30=30;let n60=60-(sec%60);if(n60==0)n60=60;
+ let nm1=840-(sec%840);if(nm1==0)nm1=840;let nm2=1680-(sec%1680);if(nm2==0)nm2=1680;
+ if(t30==1 && n30==30){let c=["red","green","blue","yellow"][Math.floor(Math.random()*4)];G1.hist.push(c);}
+ if(t60==1 && n60==60){let c=["red","green","blue","yellow"][Math.floor(Math.random()*4)];G2.hist.push(c);}
+ if(tm1==1 && nm1==840){closeGame(1);}
+ if(tm2==1 && nm2==1680){closeGame(2);}
+ t30=n30;t60=n60;tm1=nm1;tm2=nm2;
+ try{$('tt30').innerText=t30;$('tt60').innerText=t60;$('ttmain').innerText=fmt(cur==1?tm1:tm2);$('wt').innerText=fmt(cur==1?tm1:tm2);upd();}catch(e){}
 },1000);
 
-show(); setTimeout(()=>{ if($("loginPage").style.display!="none") guestLogin(); },1200);
+upd();
 </script>
-</body></html>
+</body>
+ </html>
