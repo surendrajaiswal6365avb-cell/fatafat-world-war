@@ -21,9 +21,9 @@
 .chip.on{background:gold;color:#000}
 .page{position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0a0f;display:none;z-index:50;overflow:auto}
 #pop{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:none;align-items:center;justify-content:center;z-index:99}
-#popBox{background:#1e1e2f;width:85%;max-width:360px;border-radius:15px;border:1px solid #444}
+#popBox{background:#1e1e2f;width:85%;max-width:380px;border-radius:15px;border:1px solid #444}
 #login{position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0a0f;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100}
-.g3area,.g4area{margin:8px;background:#111;padding:10px;border-radius:12px;border:2px solid gold;min-height:420px;display:none}
+.g3area,.g4area{margin:8px;background:#111;padding:10px;border-radius:12px;border:2px solid gold;min-height:420px;display:none;position:relative;overflow:hidden}
 .ballon{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle at 30% 30%, #ff6a88, #ff0040);transition:0.2s}
 .floatBall{position:absolute;width:50px;height:60px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:24px;animation:up 4s linear}
 @keyframes up{from{bottom:-60px}to{bottom:110%}}
@@ -31,7 +31,7 @@
 </head>
 <body>
 
-<div id="login"><h2 style="color:gold;letter-spacing:2px">FATAFAT WORLD WAR</h2><p id="st" style="color:#888;font-size:12px;margin-top:8px">Server: Connecting...</p><button onclick="start()" style="margin-top:10px;padding:14px 32px;border-radius:12px;font-weight:900;background:gold;color:#000;border:none">👤 PLAY NOW</button><p style="color:#555;font-size:10px;margin-top:15px">G1 14M | G2 28M | G3 9M | G4 10M</p></div>
+<div id="login"><h2 style="color:gold;letter-spacing:2px">FATAFAT WORLD WAR</h2><p id="st" style="color:#888;font-size:12px;margin-top:8px">Server: Connecting...</p><button onclick="start()" style="margin-top:10px;padding:14px 32px;border-radius:12px;font-weight:900;background:gold;color:#000;border:none">👤 PLAY NOW</button></div>
 
 <div class="top"><div onclick="document.getElementById('menu').style.display='block'">☰ <span id="onlineTop">0</span></div><b>FATAFAT <span style="color:gold">WORLD WAR</span></b><div onclick="document.getElementById('war').style.display='block'">LIVE</div></div>
 
@@ -42,12 +42,7 @@
 <div id="t4" onclick="showGame(4)" class="tab" style="background:#00cc88">G4 10M</div>
 </div>
 
-<div class="tmr">
-<div>G1:<b id="tt1">14:00</b></div>
-<div>G2:<b id="tt2">28:00</b></div>
-<div>G3:<b id="tt3">09:00</b></div>
-<div>G4:<b id="tt4">10:00</b></div>
-</div>
+<div class="tmr"><div>G1:<b id="tt1">14:00</b></div><div>G2:<b id="tt2">28:00</b></div><div>G3:<b id="tt3">09:00</b></div><div>G4:<b id="tt4">10:00</b></div></div>
 
 <div style="text-align:center;font-size:11px;background:#111;margin:5px;padding:6px;border-radius:8px">
 ID:<span id="myid">-</span> | Coin:<b id="mycoin" style="color:gold">1000</b> | Free:<b id="myfree">3</b> | Team:<b id="myteam">-</b> | Score:<b id="mysess" style="color:yellow">0</b><br>
@@ -71,23 +66,18 @@ ID:<span id="myid">-</span> | Coin:<b id="mycoin" style="color:gold">1000</b> | 
 
 <script>
 const firebaseConfig={apiKey:"AIzaSyAWlPctX9RmB8s5rHO02KBTst76vIsCaxM",authDomain:"fatafat-world-war.firebaseapp.com",projectId:"fatafat-world-war",storageBucket:"fatafat-world-war.firebasestorage.app",messagingSenderId:"466173462905",appId:"1:466173462905:web:dc2a57c56d1d348599c7a8"};
-let db=null;
-let serverOK=false;
+let db=null;let serverOK=false;
 function setStatus(t){let e=document.getElementById('st');if(e) e.innerText=t;}
-
 try{
- firebase.initializeApp(firebaseConfig);
- db=firebase.firestore();
- // 5 sec me connect na ho to offline bol do, game rukega nahi
+ firebase.initializeApp(firebaseConfig);db=firebase.firestore();
  let to=setTimeout(()=>{if(!serverOK){setStatus("Offline Mode - Play kar sakte ho");}},5000);
- db.collection("users").limit(1).get().then(()=>{serverOK=true;clearTimeout(to);setStatus("✅ Server Connected - LIVE");}).catch(()=>{clearTimeout(to);setStatus("Offline Mode - Play kar sakte ho"); serverOK=false; db=null;});
-}catch(e){setStatus("Offline Mode - Play kar sakte ho"); db=null;}
+ db.collection("users").limit(1).get().then(()=>{serverOK=true;clearTimeout(to);setStatus("✅ Server Connected - LIVE");}).catch(()=>{clearTimeout(to);setStatus("Offline Mode");serverOK=false;db=null;});
+}catch(e){setStatus("Offline Mode");db=null;}
 
 let cur=1,coin=1000,chip=1,freeBet=3,total=0;
 let sel={1:[],2:[],3:[],4:[]},myTeam={1:null,2:null,3:null,4:null},myEntry={1:false,2:false,3:false,4:false},sessScore={1:0,2:0,3:0,4:0};
 let G1={d:0,k:0,dh:[],kh:[],hist:[]},G2={d:0,k:0,dh:[],kh:[],hist:[]},G3={d:0,k:0,dh:[],kh:[]},G4={d:0,k:0,dh:[],kh:[]};
-let myId=null;
-let g3Size=40,g3Run=false,g3Timer=60,g3Iv=null,g4Run=false,g4Timer=60,g4Iv=null,g4SpawnIv=null;
+let myId=null;let g3Size=40,g3Run=false,g3Timer=60,g3Iv=null,g4Run=false,g4Timer=60,g4Iv=null,g4SpawnIv=null;
 const DUR={1:14*60,2:28*60,3:9*60,4:10*60};
 function $(i){return document.getElementById(i);}
 function popUp(h,m){$('popH').innerText=h;$('popB').innerText=m;$('pop').style.display='flex';}
@@ -96,18 +86,60 @@ function getRemain(n){let sec=Math.floor(Date.now()/1000);let dur=DUR[n];let rem
 function showGame(n){cur=n;$('t1').className='tab';$('t2').className='tab';$('t3').className='tab';$('t4').className='tab';$('t'+n).className='tab active';$('g12box').style.display=(n==1||n==2)?'block':'none';$('g3box').style.display=(n==3)?'block':'none';$('g4box').style.display=(n==4)?'block':'none';$('wg').innerText=n;try{upd();}catch(e){}}
 function start(){let id=localStorage.getItem('ff_id');if(!id){id="FF-"+Math.floor(100000+Math.random()*900000);localStorage.setItem('ff_id',id);}myId=id;coin=parseInt(localStorage.getItem('ff_coin')||"1000");total=parseInt(localStorage.getItem('ff_total')||"0");$('myid').innerText=id;$('login').style.display='none';if(db){try{db.collection("users").doc(id).set({id:id,score:total,coin:coin,team:null,game:1,online:true,sess:0},{merge:true});listen();}catch(e){}}upd();showGame(1);}
 function listen(){if(!db) return;db.collection("users").where("online","==",true).onSnapshot(s=>{let d1=0,k1=0,d2=0,k2=0,d3=0,k3=0,d4=0,k4=0;let g1d=[],g1k=[],g2d=[],g2k=[],g3d=[],g3k=[],g4d=[],g4k=[];let html="";s.forEach(doc=>{let u=doc.data();let sess=u.sess||0;html+=`<div style="padding:6px;border-bottom:1px solid #222;display:flex;justify-content:space-between"><span>${u.id} G${u.game||1}</span><span style="color:gold">${sess}</span><span>${u.team||''}</span></div>`;let gn=u.game||1;if(gn==1){if(u.team=="TEAM DHONI"){g1d.push(u.id.slice(-4)+":"+sess);d1+=sess;}else if(u.team=="TEAM KOHLI"){g1k.push(u.id.slice(-4)+":"+sess);k1+=sess;}}if(gn==2){if(u.team=="TEAM DHONI"){g2d.push(u.id.slice(-4)+":"+sess);d2+=sess;}else if(u.team=="TEAM KOHLI"){g2k.push(u.id.slice(-4)+":"+sess);k2+=sess;}}if(gn==3){if(u.team=="TEAM DHONI"){g3d.push(u.id.slice(-4)+":"+sess);d3+=sess;}else if(u.team=="TEAM KOHLI"){g3k.push(u.id.slice(-4)+":"+sess);k3+=sess;}}if(gn==4){if(u.team=="TEAM DHONI"){g4d.push(u.id.slice(-4)+":"+sess);d4+=sess;}else if(u.team=="TEAM KOHLI"){g4k.push(u.id.slice(-4)+":"+sess);k4+=sess;}}});G1.d=d1;G1.k=k1;G1.dh=g1d;G1.kh=g1k;G2.d=d2;G2.k=k2;G2.dh=g2d;G2.kh=g2k;G3.d=d3;G3.k=k3;G3.dh=g3d;G3.kh=g3k;G4.d=d4;G4.k=k4;G4.dh=g4d;G4.kh=g4k;$('userlist').innerHTML=html||"No users";$('online').innerText=s.size+" Online";$('onlineTop').innerText=s.size;upd();});}
-function upd(){let G=cur==1?G1:cur==2?G2:cur==3?G3:G4;$('mycoin').innerText=coin;$('myfree').innerText=freeBet;$('myteam').innerText=myTeam[cur]||"-";$('mysess').innerText=sessScore[cur]||0;$('dsc').innerText=G.d;$('ksc').innerText=G.k;$('dlist').innerHTML=G.dh.join("<br>")||"Entry lo";$('klist').innerHTML=G.kh.join("<br>")||"Entry lo";$('estatus').innerText=myEntry[cur]?"✅ "+myTeam[cur]+" Score:"+sessScore[cur]:"Entry nahi";$('ebtn').innerText=myEntry[cur]?"HO GAYI - "+myTeam[cur]:"ENTRY 10 COIN - G"+cur;$('g3team')?$('g3team').innerText=myTeam[3]||"-":0;['red','green','blue','yellow'].forEach(c=>{let e=$(c);if(e) e.className=sel[cur].includes(c)?"cbtn on":"cbtn";});let hG=cur==1?G1:cur==2?G2:null;if(hG && hG.hist) $('hist').innerHTML=hG.hist.slice(-20).reverse().map(c=>`<div style="width:20px;height:20px;border-radius:50%;background:${c};border:2px solid #fff;display:inline-block;margin:2px"></div>`).join("")||"";}
-function chipUpd(){for(let i=1;i<=5;i++){$('c'+i).className="chip";}$('c'+chip).className="chip on";$('mychip').innerText=chip;upd();}
+function upd(){let G=cur==1?G1:cur==2?G2:cur==3?G3:G4;$('mycoin').innerText=coin;$('myfree').innerText=freeBet;$('myteam').innerText=myTeam[cur]||"-";$('mysess').innerText=sessScore[cur]||0;$('dsc').innerText=G.d;$('ksc').innerText=G.k;$('dlist').innerHTML=G.dh.join("<br>")||"Entry lo";$('klist').innerHTML=G.kh.join("<br>")||"Entry lo";$('estatus').innerText=myEntry[cur]?"✅ "+myTeam[cur]+" Score:"+sessScore[cur]:"Entry nahi";$('ebtn').innerText=myEntry[cur]?"HO GAYI - "+myTeam[cur]:"ENTRY 10 COIN - G"+cur;if($('g3score'))$('g3score').innerText=sessScore[3];if($('g4score'))$('g4score').innerText=sessScore[4];['red','green','blue','yellow'].forEach(c=>{let e=$(c);if(e) e.className=sel[cur].includes(c)?"cbtn on":"cbtn";});let hG=cur==1?G1:cur==2?G2:null;if(hG && hG.hist) $('hist').innerHTML=hG.hist.slice(-20).reverse().map(c=>`<div style="width:20px;height:20px;border-radius:50%;background:${c};border:2px solid #fff;display:inline-block;margin:2px"></div>`).join("")||"";}
+function chipUpd(){for(let i=1;i<=5;i++){$('c'+i).className="chip";}$('c'+chip).className="chip on";upd();}
 function pick(c){if(!myEntry[cur]){$('war').style.display='block';return;}if(myTeam[cur]=="TEAM DHONI" && (c=="blue"||c=="green")){popUp("❌ Wrong","DHONI me RED YELLOW");return;}if(myTeam[cur]=="TEAM KOHLI" && (c=="red"||c=="yellow")){popUp("❌ Wrong","KOHLI me BLUE GREEN");return;}let idx=sel[cur].indexOf(c);if(idx>-1)sel[cur].splice(idx,1);else{if(sel[cur].length>=2){popUp("Limit","Max 2");return;}sel[cur].push(c);}upd();}
 function play(){if(cur!=1 && cur!=2) return;if(sel[cur].length==0){popUp("Error","Color chuno");return;}if(!myEntry[cur]){$('war').style.display='block';return;}if(freeBet<=0){if(coin<1){popUp("Coin Kam","1 chahiye");return;}coin-=1;freeBet=3;localStorage.setItem('ff_coin',coin);}freeBet--;let cols=["red","green","blue","yellow"];let win=cols[Math.floor(Math.random()*4)];let isWin=sel[cur].includes(win);let add=cur==1?18*chip:38*chip;if(isWin){sessScore[cur]+=add;total+=add;localStorage.setItem('ff_total',total);localStorage.setItem('ff_coin',coin);if(cur==1)G1.hist.push(win);else G2.hist.push(win);if(db) try{db.collection("users").doc(myId).update({score:total,sess:sessScore[cur],coin:coin});}catch(e){}popUp("WIN ✅ +"+add,"Sess:"+sessScore[cur]);}else{if(cur==1)G1.hist.push(win);else G2.hist.push(win);popUp("LOSS","Result:"+win.toUpperCase());}sel[cur]=[];upd();}
 function doEntry(){if(myEntry[cur]){popUp("Already","Ho chuki G"+cur);return;}if(coin<10){popUp("Coin Kam","10 chahiye");return;}coin-=10;localStorage.setItem('ff_coin',coin);let t=Math.random()>0.5?"TEAM DHONI":"TEAM KOHLI";myTeam[cur]=t;myEntry[cur]=true;sessScore[cur]=0;freeBet=3;if(db) try{db.collection("users").doc(myId).update({team:t,game:cur,coin:coin,score:total,sess:0,online:true});}catch(e){}$('war').style.display='none';popUp("ENTRY OK ✅","Game "+cur+" "+t+"\n0 Score se Start");upd();}
 function startG3(){if(!myEntry[3]){$('war').style.display='block';showGame(3);return;}if(g3Run){popUp("Chal raha","1 min khatam hone do");return;}g3Size=40;g3Run=true;g3Timer=60;$('g3score').innerText=sessScore[3];$('g3time').innerText=60;$('balloon').style.width='40px';$('balloon').style.height='50px';$('blast').style.display='none';$('balloon').style.display='block';$('g3play').innerText='⏳ 1 MIN CHAL RAHA...';$('g3play').disabled=true;clearInterval(g3Iv);g3Iv=setInterval(()=>{g3Timer--;$('g3time').innerText=g3Timer;if(g3Timer<=0){endG3();}},1000);}
 function fulao(){if(!g3Run||!myEntry[3]) return;let add=Math.floor(Math.random()*20)+5;g3Size+=add;if(g3Size>150){$('blast').style.display='block';$('balloon').style.display='none';sessScore[3]=Math.max(0,sessScore[3]-15);$('g3score').innerText=sessScore[3];$('mysess').innerText=sessScore[3];if(db) try{db.collection("users").doc(myId).update({sess:sessScore[3]});}catch(e){}setTimeout(()=>{g3Size=40;$('balloon').style.width='40px';$('balloon').style.height='50px';$('blast').style.display='none';$('balloon').style.display='block';},400);}else{$('balloon').style.width=g3Size+'px';$('balloon').style.height=(g3Size*1.2)+'px';sessScore[3]+=Math.floor(add/2);$('g3score').innerText=sessScore[3];$('mysess').innerText=sessScore[3];if(db) try{db.collection("users").doc(myId).update({sess:sessScore[3]});}catch(e){}total+=Math.floor(add/2);localStorage.setItem('ff_total',total);}upd();}
-function endG3(){clearInterval(g3Iv);g3Run=false;$('g3play').innerText='▶ PLAY G3';$('g3play').disabled=false;popUp("🏆 G3 KHATAM","Score:"+sessScore[3]+" Team me jud gaya");upd();}
+function endG3(){clearInterval(g3Iv);g3Run=false;$('g3play').innerText='▶ PLAY G3';$('g3play').disabled=false;popUp("🏆 G3 PLAY KHATAM","Score:"+sessScore[3]+" Team me jud gaya");upd();}
 function startG4(){if(!myEntry[4]){$('war').style.display='block';showGame(4);return;}if(g4Run){popUp("Chal raha","1 min khatam hone do");return;}g4Run=true;g4Timer=60;$('g4ground').innerHTML='';$('g4score').innerText=sessScore[4];$('g4time').innerText=60;$('g4play').innerText='⏳ 1 MIN CHAL RAHA...';$('g4play').disabled=true;clearInterval(g4Iv);clearInterval(g4SpawnIv);g4Iv=setInterval(()=>{g4Timer--;$('g4time').innerText=g4Timer;if(g4Timer<=0){endG4();}},1000);g4SpawnIv=setInterval(()=>{if(!g4Run||!myEntry[4]) return;let b=document.createElement('div');b.className='floatBall';b.style.background=['#ff0040','#00ccff','#ffcc00'][Math.floor(Math.random()*3)];b.style.left=Math.floor(Math.random()*80)+5+'%';b.innerText='🎈';b.onclick=()=>{sessScore[4]+=10;$('g4score').innerText=sessScore[4];$('mysess').innerText=sessScore[4];if(db) try{db.collection("users").doc(myId).update({sess:sessScore[4]});}catch(e){}total+=10;localStorage.setItem('ff_total',total);b.innerText='💥';setTimeout(()=>b.remove(),200);upd();};$('g4ground').appendChild(b);setTimeout(()=>{if(b.parentElement) b.remove();},4000);},700);}
-function endG4(){clearInterval(g4Iv);clearInterval(g4SpawnIv);g4Run=false;$('g4play').innerText='▶ PLAY G4';$('g4play').disabled=false;popUp("🏆 G4 KHATAM","Score:"+sessScore[4]+" Team me jud gaya");upd();}
-function closeGroup(n){let G=n==1?G1:n==2?G2:n==3?G3:G4;let min=DUR[n]/60;popUp(`🏆 GAME ${n} CLOSE - ${min} MIN`,`DHONI:${G.d} KOHLI:${G.k}`);if(db){db.collection("users").where("game","==",n).get().then(s=>{s.forEach(d=>{db.collection("users").doc(d.id).update({team:null,sess:0});});});}G.d=0;G.k=0;G.hist=[];myEntry[n]=false;myTeam[n]=null;sessScore[n]=0;if(n==3){clearInterval(g3Iv);g3Run=false;$('g3play').innerText='▶ PLAY G3';$('g3play').disabled=false;}if(n==4){clearInterval(g4Iv);clearInterval(g4SpawnIv);g4Run=false;$('g4play').innerText='▶ PLAY G4';$('g4play').disabled=false;}upd();}
-setInterval(()=>{let r1=getRemain(1),r2=getRemain(2),r3=getRemain(3),r4=getRemain(4);$('tt1').innerText=fmt(r1);$('tt2').innerText=fmt(r2);$('tt3').innerText=fmt(r3);$('tt4').innerText=fmt(r4);if($('g3group'))$('g3group').innerText=fmt(r3);if($('g4group'))$('g4group').innerText=fmt(r4);$('wtime').innerText=fmt(cur==1?r1:cur==2?r2:cur==3?r3:r4);if(r1==DUR[1]) closeGroup(1);if(r2==DUR[2]) closeGroup(2);if(r3==DUR[3]) closeGroup(3);if(r4==DUR[4]) closeGroup(4);},1000);
-</script>
-</body>
- </html>
+function endG4(){clearInterval(g4Iv);clearInterval(g4SpawnIv);g4Run=false;$('g4play').innerText='▶ PLAY G4';$('g4play').disabled=false;popUp("🏆 G4 PLAY KHATAM","Score:"+sessScore[4]+" Team me jud gaya");upd();}
+
+// ===== FINAL CHECKED FIX - NO MISTAKE =====
+function closeGroup(n){
+ let G=n==1?G1:n==2?G2:n==3?G3:G4;
+ let min=DUR[n]/60;
+ let totalPlayers = G.dh.length + G.kh.length;
+ let pot = totalPlayers * 10;
+ let winnerTeam="";
+ if(G.d > G.k) winnerTeam="TEAM DHONI";
+ else if(G.k > G.d) winnerTeam="TEAM KOHLI";
+ else winnerTeam="DRAW";
+ let winnerCount = (winnerTeam=="TEAM DHONI")?G.dh.length:(winnerTeam=="TEAM KOHLI")?G.kh.length:0;
+ let share = winnerCount>0?Math.floor(pot/winnerCount):0;
+
+ if(winnerTeam=="DRAW"){
+   popUp(`🏆 GAME ${n} DRAW - ${min} MIN`,`DHONI:${G.d} | KOHLI:${G.k}\nDraw - Koi coin nahi`);
+ }else{
+   popUp(`🏆 GAME ${n} WINNER - ${min} MIN\n${winnerTeam} 🏆`,
+`DHONI:${G.d} | KOHLI:${G.k}
+Winner: ${winnerTeam} 🏆
+Pot: ${pot} Coin
+Har winner ko: ${share} Coin
+
+Gems Score ZERO - Nayi ENTRY 0 se start`);
+ }
+
+ // FIXED - Ek hi query se sabko update,!= hataya
+ if(db){
+   db.collection("users").where("game","==",n).get().then(snap=>{
+     snap.forEach(doc=>{
+       let u=doc.data();
+       if(u.team==winnerTeam && winnerTeam!="DRAW"){
+         let newCoin=(u.coin||0)+share;
+         db.collection("users").doc(doc.id).update({coin:newCoin,team:null,sess:0});
+         if(doc.id==myId){coin=newCoin;localStorage.setItem('ff_coin',coin);}
+       }else{
+         db.collection("users").doc(doc.id).update({team:null,sess:0});
+       }
+     });
+   });
+ }
+
+ // GEMS ZERO - 100% FIX
+ sessScore[n]=0;
+ G.d=0;G.k=0;G.dh=[];G.kh=[];G.hist=[];
+ myEntry[n]=false;myTeam[n]=null;sessScore[n]=0;
+ if(n==3){clearInterval(g3Iv);g3Run=false;g3Size=40;if($('ba
