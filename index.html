@@ -1,166 +1,99 @@
-<!DOCTYPE html>
-<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FATAFAT WORLD WAR - ONLINE FIXED</title>
-<style>
-*{box-sizing:border-box}body{margin:0;background:#0a0a0f;color:#fff;font-family:Arial;padding-bottom:80px}
-.top{height:58px;background:#111;display:flex;justify-content:space-between;align-items:center;padding:0 12px;border-bottom:2px solid gold;position:sticky;top:0;z-index:20}
-.tabs{display:flex;gap:8px;padding:8px;position:sticky;top:58px;z-index:19;background:#0a0a0f}
-.tab{flex:1;padding:14px;text-align:center;border-radius:12px;font-weight:900;font-size:13px;cursor:pointer;border:2px solid gold}
-#tab1{background:linear-gradient(135deg,#ff0000,#ff9800)!important;color:#fff}
-#tab2{background:linear-gradient(135deg,#0066ff,#00ff88)!important;color:#fff}
-.tab.active{box-shadow:0 0 20px #fff!important;transform:scale(1.05)}
-.tmr{display:flex;justify-content:space-around;background:#15151f;margin:8px;padding:14px;border-radius:14px;border:2px solid gold;text-align:center}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px}
-.cbtn{padding:28px;border-radius:16px;border:3px solid transparent;font-weight:900;color:#fff;font-size:15px}
-.cbtn.on{border-color:#fff;box-shadow:0 0 20px #fff}
-.bbar{display:flex;gap:8px;background:#15151f;margin:10px;padding:12px;border-radius:14px;justify-content:center;align-items:center;border:1px solid #333}
-.chip{width:40px;height:40px;border-radius:50%;background:#222;border:2px solid #555;display:flex;align-items:center;justify-content:center;font-weight:900}
-.chip.on{background:gold;color:#000;border-color:gold}
-.page{position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0a0f;display:none;z-index:50;overflow:auto}
-#pop{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;z-index:99}
-#popBox{background:#1e1e2f;width:88%;max-width:360px;border-radius:18px;border:1px solid #444}
-.teamCard{flex:1;padding:12px;border-radius:16px;border:2px solid rgba(255,255,255,0.2)}
-#loginPage{position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0a0f;display:flex;align-items:center;justify-content:center;z-index:200;flex-direction:column}
-.gBtn{background:#fff;color:#000;border:none;padding:14px 22px;border-radius:12px;font-weight:900;display:flex;align-items:center;gap:10px;font-size:14px;width:85%;max-width:320px;justify-content:center;margin:8px}
-.adBox{margin:8px;background:#111;border:1px dashed #333;border-radius:10px;height:60px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#666;flex-direction:column}
-</style>
-</head><body>
-<div id="loginPage"><h2 style="color:gold">FATAFAT WORLD WAR</h2><p style="color:#0f0;font-size:12px;text-align:center">✅ ONLINE FIXED<br>1 Coin=3 Bet | Server Time Sync</p><button class="gBtn" onclick="guestLogin()">👤 Guest Play</button><small id="syncStatus" style="color:#aaa;margin-top:8px">Syncing server time...</small></div>
-<div class="top"><div onclick="openMenu()" style="background:#222;width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center">☰</div><b>FATAFAT <span style="color:gold">WORLD WAR</span></b><div onclick="openWW()" style="background:gold;color:#000;padding:8px 14px;border-radius:20px;font-weight:900">LIVE</div></div>
-<div class="tabs"><div id="tab1" onclick="switchGame(1)" class="tab active">GAME1<br>30SEC-15M-18 Score</div><div id="tab2" onclick="switchGame(2)" class="tab">GAME2<br>60SEC-28M-37 Score</div></div>
-<div class="tmr"><div>T30:<b id="t30" style="color:gold">30</b></div><div>T60:<b id="t60" style="color:gold">60</b></div><div>MAIN:<b id="tmain" style="color:#0f0">15:00</b></div><div>D:<b id="dsTop">32</b> K:<b id="ksTop">28</b></div></div>
-<div style="text-align:center;font-size:11px;color:#aaa;padding:6px;background:#111;margin:0 8px;border-radius:10px">ID:<span id="pid">FF-000</span> | Coin:<b id="coin" style="color:gold">1000</b> | Team:<b id="team">-</b> | Free:<b id="free" style="color:#0f0">3</b> | Chip:<b id="chipShow">1</b><br><span style="color:#0f0">DHONI=🔴🟡 | KOHLI=🔵🟢</span> | <span id="onlineClock" style="color:gold">Online: --:--:--</span></div>
-<div class="grid"><button id="red" onclick="pick('red')" class="cbtn" style="background:#e53935">🔴 RED - DHONI</button><button id="green" onclick="pick('green')" class="cbtn" style="background:#43a047">🟢 GREEN - KOHLI</button><button id="blue" onclick="pick('blue')" class="cbtn" style="background:#1e88e5">🔵 BLUE - KOHLI</button><button id="yellow" onclick="pick('yellow')" class="cbtn" style="background:#fdd835;color:#000">🟡 YELLOW - DHONI</button></div>
-<div class="bbar"><div id="chip1" onclick="setChip(1)" class="chip on">1</div><div id="chip2" onclick="setChip(2)" class="chip">2</div><div id="chip3" onclick="setChip(3)" class="chip">3</div><div id="chip4" onclick="setChip(4)" class="chip">4</div><div id="chip5" onclick="setChip(5)" class="chip">5</div><button onclick="bet()" style="background:#00c853;border:none;padding:12px 22px;border-radius:12px;color:#fff;font-weight:900">PLAY</button></div>
-<div id="adMain" class="adBox"><span>🎯 AD 1 - Main Game 320x50</span><small>Final Fixed</small></div>
-<div id="history" style="margin:10px;background:#111;border:1px solid #333;border-radius:12px;padding:10px;min-height:44px;display:flex;gap:6px;overflow-x:auto"></div>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>V93 AUTO RESPAWN</title><style>*{margin:0;box-sizing:border-box}body{background:#081e3a;color:#fff;font-family:Arial;overflow:hidden;touch-action:none}.p{position:fixed;inset:0;background:#081e3a;display:none;flex-direction:column;z-index:10;overflow:auto}.f{position:fixed;inset:0;background:#050f1e;z-index:80;display:none;flex-direction:column}#H{position:fixed;inset:0;background:#0a2a4a;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99}.c{margin:4px;background:#122a4a;border:2px solid #0af;border-radius:10px;padding:8px;display:flex;align-items:center;gap:6px}.b{background:#0ef;color:#000;border:0;padding:6px 10px;border-radius:6px;font-weight:900;font-size:11px}.whiteTime{background:#fff;color:#000;padding:3px 10px;border-radius:6px;font-weight:900;font-size:11px}.winBox{margin:8px auto 4px;background:linear-gradient(#ffda4a,#ff9c00);border:2px solid #ffcc00;border-radius:12px;padding:4px 28px;text-align:center}.teams{display:flex;height:60vh}.teamCard{flex:1;clip-path:polygon(50% 0,100% 12%,100% 100%,0 100%,0 12%);display:flex;flex-direction:column;align-items:center;padding-top:16px}.teamCard.kohli{background:linear-gradient(#0aa4ff,#0066cc)}.teamCard.dhoni{background:linear-gradient(#d89a2a,#8a5a10)}.youWon{background:linear-gradient(#7fff7f,#00c000);color:#000;font-weight:900;font-size:9px;padding:2px 8px;border-radius:3px;margin:3px 0}.h{display:none}.bp{width:96%;margin:2px auto;background:#06f;border-radius:7px;padding:11px;color:#fff;font-weight:900;display:block}.bt{position:fixed;bottom:0;left:0;right:0;background:#001a33;padding:4px;z-index:20}.pastCard{margin:6px;background:linear-gradient(180deg,#134080,#0e2d5a);border-radius:12px;overflow:hidden;border:1px solid #2a5a9a}.pastTop{display:flex;padding:8px;gap:8px;align-items:center}.pastIcon{width:68px;height:52px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:28px;border:2px solid #fff;flex-shrink:0}.pastMid{flex:1;background:linear-gradient(90deg,#0a5ab0,#0a7ad0);border-radius:8px;padding:6px 8px;display:flex;align-items:center;gap:6px}.pastMid.dhoni{background:linear-gradient(90deg,#b07a20,#d89a2a)}.resBtn{background:linear-gradient(#0f0,#0a0);color:#fff;border:0;padding:5px 14px;border-radius:16px;font-weight:900;font-size:10px;width:100%;margin-top:4px}.pastBottom{display:flex;justify-content:space-between;background:#0006;padding:4px 8px;font-size:8px;color:#aaccff}.r{display:flex;align-items:center;background:#1e3a6a;margin:2px 3px;border-radius:4px;padding:7px}.r.m{border-left:3px solid #0f8;background:#a34a00}.fr{position:absolute;width:56px;height:56px;display:flex;align-items:center;justify-content:center;font-size:36px;pointer-events:none}.ln{position:absolute;height:2px;background:red;z-index:999;transform-origin:0 50%}#m{position:fixed;left:-100%;top:0;bottom:0;width:78%;background:#001a33;z-index:200;transition:.2s;border-right:2px solid #0af;padding:7px;display:flex;flex-direction:column}#m.o{left:0}.mi{padding:8px;background:#122a4a;border-radius:6px;margin:3px 0;font-size:12px}
+</style></head><body>
+<div id="H"><b style="color:gold">V93 TOURNAMENT FIX - AUTO WAPAS</b><div style="font-size:9px;margin:4px">Kam time upar - Zyada time niche - 27/28 min turant wapas</div><button onclick="document.getElementById('H').style.display='none';document.getElementById('A').style.display='flex'" style="padding:8px 16px;background:gold;color:#000;font-weight:900;border:0;border-radius:5px;margin-top:6px">START</button></div>
 
-<div id="menu" class="page"><div style="padding:12px;background:#111;display:flex;justify-content:space-between"><b>PROFILE</b><span onclick="closeMenu()" style="background:#222;padding:6px 12px;border-radius:8px">✕ Close</span></div>
-<div style="background:linear-gradient(135deg,#1e1e2f,#2a2a4a);padding:20px;margin:10px;border-radius:16px;border:2px solid gold;text-align:center"><div id="mName" style="font-size:18px;font-weight:900;color:gold">Guest</div><div id="mid" style="font-size:12px;color:#aaa">FF-000</div><div style="margin-top:12px;display:flex;gap:10px;justify-content:center"><div style="background:#111;padding:10px 16px;border-radius:12px"><small>COIN</small><br><b id="mcoin" style="color:gold">1000</b></div><div style="background:#111;padding:10px 16px;border-radius:12px"><small>FREE</small><br><b id="mfree" style="color:#0f0">3</b></div><div style="background:#111;padding:10px 16px;border-radius:12px"><small>SCORE</small><br><b id="mtotalWin" style="color:#0f0">0</b></div></div></div>
-<div style="padding:10px;display:grid;grid-template-columns:1fr 1fr;gap:10px"><button onclick="addCoin()" style="background:gold;border:none;padding:14px;border-radius:12px;color:#000;font-weight:900">+ ADD 100 COIN</button><button onclick="logout()" style="background:#e53935;border:none;padding:14px;border-radius:12px;color:#fff;font-weight:900">LOGOUT</button></div>
-</div>
+<div id="A" class="p" style="display:flex"><div style="padding:7px;background:#0006;display:flex;gap:5px;align-items:center"><div onclick="document.getElementById('m').classList.add('o')" style="width:28px;height:28px;background:#122a4a;border-radius:5px;display:flex;align-items:center;justify-content:center;border:2px solid #0af">☰</div><b style="font-size:11px">🏆 TOURNAMENTS</b><div style="margin-left:auto;background:#fff;color:#000;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:900" id="clock">00:00</div></div><div style="font-size:8px;color:#0ef;text-align:center;padding:2px">Kam time wala upar - Zyada wala niche - Close hote hi 27/28 min wala turant wapas</div><div id="tList"></div></div>
 
-<div id="ww" class="page"><div style="padding:12px;background:#111;display:flex;justify-content:space-between"><span onclick="closeWW()" style="background:#222;padding:6px 12px;border-radius:8px">← Back</span><b>GAME <span id="wg">1</span></b><span id="wt">15:00</span></div>
-<div style="padding:10px"><div id="bal" style="background:#1a1a1f;border:2px solid gold;padding:12px;border-radius:12px;color:gold;font-weight:900;text-align:center">LIVE SCORE - ONLINE SYNCED</div></div>
-<div style="display:flex;gap:8px;padding:8px">
-<div class="teamCard" style="background:linear-gradient(135deg,#c62828,#ff6f00)"><div style="text-align:center">DHONI TEAM<br>🔴🟡<br>SCORE: <b id="dsc" style="font-size:30px;color:yellow">32</b><br>USERS: <b id="dc">0</b></div><div id="dlist" style="background:rgba(0,0,0,0.4);padding:6px;border-radius:8px;margin-top:8px;max-height:150px;overflow:auto;font-size:11px"></div></div>
-<div class="teamCard" style="background:linear-gradient(135deg,#1565c0,#00c853)"><div style="text-align:center">KOHLI TEAM<br>🔵🟢<br>SCORE: <b id="ksc" style="font-size:30px;color:yellow">28</b><br>USERS: <b id="kc">0</b></div><div id="klist" style="background:rgba(0,0,0,0.4);padding:6px;border-radius:8px;margin-top:8px;max-height:150px;overflow:auto;font-size:11px"></div></div>
-</div>
-<div style="text-align:center;padding:12px"><div id="estatus">Entry nahi hui</div><button id="ebtn" onclick="entry()" style="width:98%;padding:16px;background:gold;color:#000;font-weight:900;border-radius:14px;border:none;margin-top:12px">ENTRY 10 COIN</button></div></div>
+<div id="m"><div style="display:flex;justify-content:space-between"><b>☰ MENU</b><div onclick="document.getElementById('m').classList.remove('o')" style="width:18px;height:18px;background:#0008;border-radius:50%;display:flex;align-items:center;justify-content:center">✕</div></div><div class="mi" onclick="document.getElementById('m').classList.remove('o');document.getElementById('A').style.display='flex'">🏆 Tournaments</div><div class="mi" onclick="document.getElementById('m').classList.remove('o');document.getElementById('HIS').style.display='flex';renderHis()">📜 Tournament Result</div></div>
 
-<div id="pop" onclick="this.style.display='none'"><div id="popBox" onclick="event.stopPropagation()"><div id="popH" style="padding:14px;text-align:center;font-weight:900;background:#2962ff;border-radius:18px 18px 0 0">Notice</div><div id="popB" style="padding:16px;text-align:center;color:#ccc;white-space:pre-line"></div><button onclick="document.getElementById('pop').style.display='none'" style="margin:0 auto 14px;display:block;background:#2962ff;border:none;padding:8px 20px;border-radius:20px;color:#fff;font-weight:900">OK</button></div></div>
+<div id="HIS" class="p" style="display:flex;background:#0a1a3a"><div style="padding:8px;background:#0008;display:flex;align-items:center;gap:8px"><div onclick="document.getElementById('HIS').style.display='none';document.getElementById('A').style.display='flex'" style="width:24px;height:24px;background:#fff;color:#000;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900">‹</div><b>Tournament Result</b></div><div id="hisBox" style="padding:4px;overflow:auto"></div></div>
+
+<div id="B" class="p" style="background:linear-gradient(90deg,#0b8de0 50%,#0a6b5a 50%)"><div style="height:36px;background:#000a;display:flex;align-items:center;justify-content:space-between;padding:0 8px"><div onclick="document.getElementById('B').style.display='none';document.getElementById('A').style.display='flex'" style="width:24px;height:24px;background:#0008;border-radius:50%;display:flex;align-items:center;justify-content:center">‹</div><div class="whiteTime" id="realTime">06:10 LIVE</div><div style="font-size:10px">How To Play</div></div><div class="winBox"><div style="font-size:9px;color:#5a3000;font-weight:900">WINNINGS</div><b style="color:#000">₹<span id="wA">71.51</span></b></div><div class="teams"><div class="teamCard kohli" onclick="viewTeam('K')"><div style="font-size:9px">Avg. Score</div><b id="aB" style="font-size:26px;color:#0f0">192</b><div class="youWon" id="wB">YOU WON</div><div style="width:80%;height:130px;background:#0af;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:50px;margin-top:4px">🧔</div><div style="background:#fff;color:#000;font-size:8px;font-weight:900;padding:4px 6px;border-radius:4px;margin-top:auto;width:92%;display:flex;justify-content:space-between"><span>👥 <span id="cDh">37</span> View</span><span><b id="tY">7098</b></span></div></div><div style="width:3px;background:#fff"></div><div class="teamCard dhoni" onclick="viewTeam('D')"><div style="font-size:9px">Avg. Score</div><b id="aG" style="font-size:26px">151</b><div class="youWon h" id="wG">YOU WON</div><div style="width:80%;height:130px;background:#fa0;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:50px;margin-top:4px">👨</div><div style="background:#fff2cc;color:#000;font-size:8px;font-weight:900;padding:4px 6px;border-radius:4px;margin-top:auto;width:92%;display:flex;justify-content:space-between"><span><b id="tR">7076</b></span><span>👥 <span id="cKo">47</span> View</span></div></div></div><div style="position:fixed;bottom:76px;left:50%;transform:translateX(-50%);background:#002a6a;border:2px solid #0af;border-radius:16px;padding:5px 14px;display:flex;gap:6px;align-items:center"><div style="width:18px;height:18px;background:#0af;border-radius:50%"></div><div><div style="font-size:6px">YOUR SCORE</div><b id="yS" style="color:#0ef">2760</b></div></div><div class="bt" style="background:transparent"><button class="bp" onclick="playNow()">🔵 PLAY NOW - 1 MIN</button><div style="font-size:7px;text-align:center;color:#fff8">1 min game - khatam hote hi team me judega - wapas yahi ayega</div></div></div>
+
+<div id="C" class="p" style="background:#0a2a5a;padding-bottom:50px"><div style="height:32px;background:#0f4a5a;display:flex;align-items:center;justify-content:center;position:relative"><div style="position:absolute;left:4px;width:18px;height:18px;background:#0008;border-radius:50%;display:flex;align-items:center;justify-content:center" onclick="document.getElementById('C').style.display='none';document.getElementById('B').style.display='flex'">‹</div><b id="cTitle">TEAM VIEW</b></div><div id="teamList"></div><div class="bt"><button class="bp" onclick="playNow()">🔵 PLAY 1 MIN</button><button onclick="document.getElementById('C').style.display='none';document.getElementById('B').style.display='flex'" style="width:96%;margin:4px auto;background:#333;border:0;border-radius:6px;padding:8px;color:#fff;display:block">‹ Back to Result</button></div></div>
+
+<div id="F1" class="f"><div style="display:flex;justify-content:space-between;padding:2px;background:#000"><span onclick="X()" style="background:#222;padding:1px 3px;border-radius:2px;font-size:10px">‹ Back</span><b id="m1" style="color:gold;font-size:10px">01:00</b><b id="c1" style="color:yellow;font-size:10px">0</b></div><div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:10px;position:relative;overflow:hidden" id="f1a"><div id="bl" style="width:40px;height:48px;background:#f06;border-radius:50%;transition:.1s"></div><div style="width:18px;height:54px;background:#666;border:2px solid #222;border-radius:3px"></div><button onclick="F()" style="margin-top:8px;background:#d06;border:0;padding:9px 16px;border-radius:14px;color:#fff;font-weight:900">💨 TAP</button></div></div>
+<div id="F2" class="f"><div style="display:flex;justify-content:space-between;padding:2px;background:#000"><span onclick="X()" style="background:#222;padding:1px 3px;border-radius:2px;font-size:10px">‹ Back</span><b id="m2" style="color:gold;font-size:10px">01:00</b><b id="c2" style="color:yellow;font-size:10px">0</b></div><div id="a2" style="flex:1;position:relative;overflow:hidden"></div></div>
+<div id="F3" class="f"><div style="display:flex;justify-content:space-between;padding:2px;background:#020a15"><span onclick="X()" style="background:#222;padding:1px 3px;border-radius:2px;font-size:10px">‹ Back</span><b id="m3" style="color:gold;font-size:10px">01:00</b><b id="c3" style="color:gold;font-size:10px">0</b></div><div id="a3" style="flex:1;position:relative;overflow:hidden;touch-action:none"></div></div>
 
 <script>
-// ===== ONLINE TIME SYNC FIX =====
-let SERVER_OFFSET = 0;
-let SERVER_READY = false;
-async function syncServerTime(){
- try{
-   let res = await fetch('https://worldtimeapi.org/api/timezone/Asia/Kolkata');
-   let data = await res.json();
-   SERVER_OFFSET = new Date(data.datetime).getTime() - Date.now();
-   SERVER_READY = true;
-   document.getElementById('syncStatus').innerText = "✅ Online Time Synced: "+new Date(data.datetime).toLocaleTimeString();
- }catch(e){
-   try{
-     let res2 = await fetch('https://timeapi.io/api/Time/current/zone?timeZone=Asia/Kolkata').then(r=>r.json());
-     SERVER_OFFSET = new Date(res2.dateTime).getTime() - Date.now();
-     SERVER_READY = true;
-   }catch(e2){ SERVER_READY = true; SERVER_OFFSET=0; }
- }
+let g=60,iv,tm,gs=0,s1=0,s2=0,s3=0,cr=1,lc=0,cc=0,bs=40,ms={1:2760,2:2760,3:2760},curTour=null,pot=100;
+let $=i=>document.getElementById(i);
+let tours=[
+{id:1,game:1,name:"FULAO PIPE",emoji:"🎈",dur:5,teamD:37,teamK:47,end:0,boot:10},
+{id:2,game:2,name:"POP 76",emoji:"🎯",dur:10,teamD:37,teamK:47,end:0,boot:20},
+{id:3,game:3,name:"FRUIT SAMURAI",emoji:"🍎",dur:15,teamD:37,teamK:47,end:0,boot:50},
+{id:4,game:1,name:"METRO SURFER",emoji:"🏃",dur:25,teamD:37,teamK:47,end:0,boot:100},
+{id:5,game:2,name:"2048 BALLS",emoji:"🔴",dur:27,teamD:37,teamK:47,end:0,boot:100},
+{id:6,game:3,name:"CANDY MATCH",emoji:"🍬",dur:28,teamD:37,teamK:47,end:0,boot:20},
+{id:7,game:1,name:"SPACE WARRIOR",emoji:"🚀",dur:29,teamD:37,teamK:47,end:0,boot:10},
+];
+// FIX - sabka end future me set karo - turant ayega - kabhi khali nahi hoga
+function resetTours(){let now=Date.now();tours.forEach(t=>{if(!t.end||t.end<=now){t.end=now+t.dur*60000;}});}
+resetTours();
+let dhoniPlayers=[{n:"You (Dhoni)",e:"🧔",s:2760,id:"YOU"},{n:"Amit Dhoni",e:"😎",s:291}];
+let kohliPlayers=[{n:"Kohli Fan 1",e:"👑",s:310},{n:"You Kohli",e:"🧔",s:2760,id:"YOU"}];
+function fmt(t){let d=Math.max(0,Math.floor((t.end-Date.now())/1000));let m=Math.floor(d/60),s=d%60;return d<=0?"CLOSED":m+":"+(s<10?"0"+s:s)+" left";}
+function renderTours(){
+// SORT - kam time upar, zyada niche
+tours.sort((a,b)=>(a.end-Date.now())-(b.end-Date.now()));
+let h="";tours.forEach(t=>{
+let left=fmt(t),closed=t.end<=Date.now();
+if(closed) return; // close wala dikhega hi nahi yahan - history me jayega
+h+=`<div class="c"><div style="font-size:24px">${t.emoji}</div><div style="flex:1"><b style="font-size:11px">${t.name} #${t.id}</b><br><span style="font-size:8px;color:#0ef">⏱️ ${left} | ${t.dur}min | Boot ₹${t.boot} | Dh:${t.teamD} Ko:${t.teamK}</span></div><button class="b" onclick="R(${t.id})">VIEW</button></div>`;
+});
+if(!h)h="<div style='text-align:center;padding:10px;color:#0ef'>Naya tournament aa raha hai... 1 sec</div>";
+$('tList').innerHTML=h;$('clock').innerText=new Date().toLocaleTimeString().slice(0,5);$('realTime').innerText=new Date().toLocaleTimeString().slice(0,5)+" - "+(curTour?fmt(curTour):"LIVE");
 }
-syncServerTime();
-function getServerTime(){ return new Date(Date.now() + SERVER_OFFSET); }
-function getServerSec(){ return Math.floor((Date.now()+SERVER_OFFSET)/1000); }
-// ===== FIX END =====
-
-var cur=1, coin=1000, chip=1, freeBet=3, t30=30, t60=60, tMain1=900, tMain2=1680, totalWinScore=0;
-var sel={1:[],2:[]}, myTeams={1:null,2:null}, myEntry={1:false,2:false};
-var liveG1={dScore:32,kScore:28,dh:[],kh:[],history:[]}, liveG2={dScore:27,kScore:35,dh:[],kh:[],history:[]};
-function $(id){return document.getElementById(id);}
-function pop(h,m){$("popH").innerText=h; $("popB").innerText=m; $("pop").style.display="flex";}
-function openMenu(){ $("menu").style.display="block"; show(); }
-function closeMenu(){ $("menu").style.display="none"; }
-function openWW(){ $("ww").style.display="block"; show(); }
-function closeWW(){ $("ww").style.display="none"; }
-function fmt(s){var m=Math.floor(s/60),sc=s%60; return (m<10?"0"+m:m)+":"+(sc<10?"0"+sc:sc);}
-function switchGame(n){ cur=n; show(); }
-function guestLogin(){
- document.getElementById("loginPage").style.display="none";
- let id = localStorage.getItem('fatafat_online_id');
- if(!id){
-   id="FF-"+Math.floor(100000+Math.random()*900000);
-   localStorage.setItem('fatafat_online_id',id);
- }
- let urlId = new URLSearchParams(location.search).get('id') || new URLSearchParams(location.search).get('pid');
- if(urlId){ id=urlId; localStorage.setItem('fatafat_online_id',id); }
- window.pidGlobal=id;
- $("pid").innerText=id; $("mid").innerText=id; $("mName").innerText="Guest "+id.slice(-4);
- show();
+function closeTournament(t,myScore=0){
+let isYouWin=Math.random()>.5;
+let wonAmt=isYouWin? (Math.random()*30+5).toFixed(2):"0";
+let rec={id:t.id,game:t.game,name:t.name,emoji:t.emoji,won:wonAmt,boot:t.boot,rank:isYouWin?"1 / 2":"2 / 2",totalWinners:Math.floor(Math.random()*200+69),date:new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short'})+" / "+new Date().toLocaleTimeString().slice(0,5)+" PM",team:t.teamD==37?"YOUR TEAM DHONI":"YOUR TEAM KOHLI",result:isYouWin?"WON":"LOST",winTeam:isYouWin?"DHONI":"KOHLI",time:Date.now(),myScore:myScore};
+let his=JSON.parse(localStorage.getItem("fww_his")||"[]");his.unshift(rec);localStorage.setItem("fww_his",JSON.stringify(his));
+// RESPAWN - 27,28 min wala turant wapas - sabse niche jayega kyuki time zyada
+t.end=Date.now()+t.dur*60000;
+t.teamD=Math.floor(30+Math.random()*20);t.teamK=Math.floor(30+Math.random()*20);
+renderTours();renderHis();
 }
-function logout(){ localStorage.removeItem('fatafat_online_id'); location.reload(); }
-function show(){
- try{
-  var g=cur==1?liveG1:liveG2;
-  $("coin").innerText=coin; $("mcoin").innerText=coin; $("mfree").innerText=freeBet; $("mtotalWin").innerText=totalWinScore; $("free").innerText=freeBet; $("chipShow").innerText=chip;
-  $("team").innerText=myTeams[cur]||"-"; $("dsTop").innerText=g.dScore; $("ksTop").innerText=g.kScore; $("dsc").innerText=g.dScore; $("ksc").innerText=g.kScore; $("dc").innerText=g.dh.length; $("kc").innerText=g.kh.length;
-  $("dlist").innerHTML=g.dh.join("<br>")||"0 user"; $("klist").innerHTML=g.kh.join("<br>")||"0 user";
-  $("estatus").innerText=myEntry[cur]? "✅ "+myTeams[cur]+" | Free:"+freeBet : "Entry nahi hui Game "+cur;
-  $("ebtn").innerText=myEntry[cur]? "HO GAYI - "+myTeams[cur]+" | Free:"+freeBet : "ENTRY 10 COIN - GAME "+cur;
-  $("wg").innerText=cur; $("bal").innerText="ONLINE SYNCED | D:"+g.dScore+" (🔴🟡) K:"+g.kScore+" (🔵🟢) | "+fmt(cur==1?tMain1:tMain2);
-  if(cur==1){$("tab1").className="tab active"; $("tab2").className="tab";}else{$("tab2").className="tab active"; $("tab1").className="tab";}
-  ["red","green","blue","yellow"].forEach(c=>{let el=$(c); if(el) el.className=sel[cur].indexOf(c)>-1?"cbtn on":"cbtn";});
-  if(g.history) $("history").innerHTML=g.history.slice(-18).reverse().map(c=>"<div style='width:22px;height:22px;border-radius:50%;background:"+c+";border:2px solid #fff;margin:3px;display:inline-block'></div>").join("");
-  $("onlineClock").innerText = "Online: "+getServerTime().toLocaleTimeString();
- }catch(e){}
+setInterval(()=>{
+let now=Date.now();
+tours.forEach(t=>{
+if(t.end<=now){
+closeTournament(t,0);
 }
-function setChip(n){ chip=n; for(var i=1;i<=5;i++)$("chip"+i).className="chip"; $("chip"+n).className="chip on"; show(); }
-function pick(c){
- if(!myEntry[cur]){openWW(); return;}
- if(myTeams[cur]=="TEAM DHONI"){ if(c=="blue"||c=="green"){pop("❌ Wrong Team","DHONI Team me sirf 🔴 RED aur 🟡 YELLOW");return;} }
- if(myTeams[cur]=="TEAM KOHLI"){ if(c=="red"||c=="yellow"){pop("❌ Wrong Team","KOHLI Team me sirf 🔵 BLUE aur 🟢 GREEN");return;} }
- let idx=sel[cur].indexOf(c); if(idx>-1) sel[cur].splice(idx,1); else { if(sel[cur].length>=2){pop("Limit","Max 2 color");return;} sel[cur].push(c); } show();
-}
-function bet(){
- if(sel[cur].length==0){pop("Error","Color chuno pehle");return;}
- if(!myEntry[cur]){openWW();return;}
- if(freeBet<=0){ if(coin<1){pop("Coin Kam","1 coin chahiye");return;} coin-=1; freeBet=3; }
- freeBet--;
- let cols=["red","green","blue","yellow"]; let winColor=cols[Math.floor(Math.random()*4)]; let isWin=sel[cur].indexOf(winColor)>-1; let g=cur==1?liveG1:liveG2; let addScore=cur==1?18*chip:37*chip;
- if(isWin){
-   totalWinScore+=addScore;
-   if(myTeams[cur]=="TEAM DHONI"){ g.dScore+=addScore; pop("WIN ✅ DHONI +"+addScore,"Color: "+winColor.toUpperCase()+"\nFree Left: "+freeBet); }
-   else{ g.kScore+=addScore; pop("WIN ✅ KOHLI +"+addScore,"Color: "+winColor.toUpperCase()+"\nFree Left: "+freeBet); }
- }else{ pop("LOSS","Result: "+winColor.toUpperCase()+"\nFree: "+freeBet); }
- g.history.push(winColor); sel[cur]=[]; show();
-}
-function entry(){
- if(myEntry[cur]){pop("Already","Ho chuki");return;}
- if(coin<10){pop("Coin Kam","10 chahiye");return;}
- coin-=10; let t=Math.random()>0.5?"TEAM DHONI":"TEAM KOHLI"; myTeams[cur]=t; myEntry[cur]=true; freeBet=3;
- let g=cur==1?liveG1:liveG2; if(t=="TEAM DHONI") g.dh.push((window.pidGlobal||"YOU").slice(0,8)); else g.kh.push((window.pidGlobal||"YOU").slice(0,8));
- closeWW(); pop("ENTRY OK ✅",t+"\n3 Free Bet | Coin: "+coin); show();
-}
-function addCoin(){ coin+=100; show(); pop("Added","+100 Coin"); }
-
-// ===== FIXED TIMER - SAB PHONE ME SAME =====
-setInterval(function(){
- if(!SERVER_READY) return;
- let sec = getServerSec();
- let newT30 = 30 - (sec % 30); if(newT30==0) newT30=30;
- let newT60 = 60 - (sec % 60); if(newT60==0) newT60=60;
- let newTMain1 = 900 - (sec % 900); if(newTMain1==0) newTMain1=900;
- let newTMain2 = 1680 - (sec % 1680); if(newTMain2==0) newTMain2=1680;
-
- if(newT30==30 && t30==1){ liveG1.history.push(["red","green","blue","yellow"][Math.floor(Math.random()*4)]); }
- if(newT60==60 && t60==1){ liveG2.history.push(["red","green","blue","yellow"][Math.floor(Math.random()*4)]); }
- if(newTMain1==900 && tMain1==1){ liveG1.dScore=32; liveG1.kScore=28; myEntry[1]=false; myTeams[1]=null; pop("GAME1 CLOSE","New Start"); }
- if(newTMain2==1680 && tMain2==1){ liveG2.dScore=27; liveG2.kScore=35; myEntry[2]=false; myTeams[2]=null; pop("GAME2 CLOSE","New Start"); }
-
- t30=newT30; t60=newT60; tMain1=newTMain1; tMain2=newTMain2;
- try{ $("t30").innerText=t30; $("t60").innerText=t60; $("tmain").innerText=fmt(cur==1?tMain1:tMain2); $("wt").innerText=fmt(cur==1?tMain1:tMain2); show(); }catch(e){}
+});
+renderTours();
+let his=JSON.parse(localStorage.getItem("fww_his")||"[]");
+let f=his.filter(x=>now-x.time<2*60*60*1000);
+if(f.length!=his.length)localStorage.setItem("fww_his",JSON.stringify(f));
 },1000);
-
-show(); setTimeout(()=>{ if($("loginPage").style.display!="none") guestLogin(); },1200);
-</script>
-</body></html>
+renderTours();
+function R(tid){let t=tours.find(x=>x.id==tid);if(!t||t.end<=Date.now()){alert("Ye wala close ho gaya - naya wala dekh");resetTours();renderTours();return;}curTour=t;cr=t.game;$('tY').innerText=7098+Math.floor(Math.random()*100);$('tR').innerText=7076+Math.floor(Math.random()*100);$('aB').innerText=192;$('aG').innerText=151;$('cDh').innerText=t.teamD;$('cKo').innerText=t.teamK;$('wA').innerText="71.51";$('A').style.display='none';$('B').style.display='flex';}
+function viewTeam(team){let list=team=='D'?dhoniPlayers:kohliPlayers;$('cTitle').innerText=team=='D'?"DHONI TEAM VIEW - "+curTour.teamD+" Players":"KOHLI TEAM VIEW - "+curTour.teamK+" Players";let h="";list.forEach((p,i)=>{h+=`<div class="r ${p.id=='YOU'?'m':''}"><b>#${i+1}</b> ${p.e} ${p.n}<b style="margin-left:auto">${p.s}</b></div>`});$('teamList').innerHTML=h;$('B').style.display='none';$('C').style.display='flex';}
+function playNow(){if(!curTour||curTour.end<=Date.now()){alert("Tournament khatam - naya wala join karo");renderTours();return;}g=60;$('B').style.display='none';$('C').style.display='none';if(curTour.game==1)O1(60);else if(curTour.game==2)O2(60);else O3(60);}
+function X(){
+clearInterval(iv);clearTimeout(tm);clearInterval(window.sp);
+if(cr==1)ms[1]=s1;else if(cr==2)ms[2]=s2;else ms[3]=s3;
+let sc=cr==1?s1:cr==2?s2:s3;
+// SCORE TEAM ME JUDEGA
+if(curTour){
+if(curTeamJoin=='D'){dhoniPlayers[0].s+=sc;$('tY').innerText=parseInt($('tY').innerText)+sc;}else{kohliPlayers[1].s+=sc;$('tR').innerText=parseInt($('tR').innerText)+sc;}
+$('yS').innerText=sc;
+$('wA').innerText=(sc*0.025+5).toFixed(2);
+// wapas PLAY NOW PAGE pe
+}
+$('F1').style.display='none';$('F2').style.display='none';$('F3').style.display='none';$('B').style.display='flex';
+}
+let curTeamJoin='D';
+function renderHis(){let his=JSON.parse(localStorage.getItem("fww_his")||"[]");let now=Date.now();let f=his.filter(x=>now-x.time<2*60*60*1000);localStorage.setItem("fww_his",JSON.stringify(f));let h="";if(f.length==0)h="<div style='text-align:center;padding:20px;color:#888'>No Result - Game close hote hi yahan ayega</div>";f.forEach(x=>{let isWon=x.result=="WON";h+=`<div class="pastCard"><div class="pastTop"><div class="pastIcon" style="background:#fa0">${x.emoji}</div><div class="pastMid ${x.winTeam=='DHONI'?'dhoni':''}"><div style="font-size:30px">👨</div><div style="flex:1"><div style="display:flex;gap:4px;font-size:8px"><span>Won ₹${x.won}</span><span>👥 ${x.totalWinners}</span><span>${x.date}</span></div><b style="font-size:9px">${x.team}</b><div style="font-size:11px;font-weight:900;color:${isWon?'#0f0':'#fff'}">${x.result} ${isWon?'🏆':''}</div><button class="resBtn">RESULTS</button></div></div></div><div class="pastBottom"><span>Boot Amount ₹${x.boot}</span><span>Rank ${x.rank}</span><span>Total Winners ${x.totalWinners}</span></div></div>`});$('hisBox').innerHTML=h;}
+renderHis();
+function O1(d){s1=0;g=d;$('m1').innerText="01:00";$('c1').innerText='0';$('F1').style.display='flex';clearInterval(iv);iv=setInterval(()=>{g--;$('m1').innerText="00:"+(g<10?"0"+g:g);if(g<=0)X()},1000)}
+function O2(d){s2=0;g=d;$('m2').innerText="01:00";$('a2').innerHTML='';$('F2').style.display='flex';clearInterval(iv);iv=setInterval(()=>{g--;$('m2').innerText="00:"+(g<10?"0"+g:g);if(g<=0)X()},1000);clearInterval(window.sp);window.sp=setInterval(()=>{let b=document.createElement('div');b.style.cssText='position:absolute;width:48px;height:58px;border-radius:50%;background:#f04;left:'+(5+Math.random()*60)+'%;bottom:-70px;transition:bottom 3s linear;display:flex;align-items:center;justify-content:center;font-size:24px';b.textContent='🎈';b.onclick=()=>{s2+=18;$('c2').innerText=s2;b.remove()};$('a2').appendChild(b);setTimeout(()=>b.style.bottom='110%',20);setTimeout(()=>b.remove(),3200)},550)}
+function O3(d){s3=0;cc=0;g=d;gs=Date.now();$('m3').innerText="01:00";$('c3').innerText='0';$('a3').innerHTML='';$('F3').style.display='flex';clearInterval(iv);clearTimeout(tm);iv=setInterval(()=>{g--;if(g<0)g=0;$('m3').innerText="00:"+(g<10?"0"+g:g);if(g<=0)X()},1000);N(4);W();Q()}
+function N(s,b){let f=document.createElement('div');f.className='fr';f.textContent=b?'💣':['🍓','🍎','🍇'][Math.floor(Math.random()*3)];f.dataset.t=b?'b':'f';f.dataset.c='0';f.style.left=(Math.random()*70)+'%';f.style.bottom='-70px';f.style.transition='bottom '+s+'s linear';$('a3').appendChild(f);setTimeout(()=>f.style.bottom='120%',20);setTimeout(()=>{if(f.parentElement&&f.dataset.c=='0')f.remove()},s*1000+400)}
+function W(){let e=(Date.now()-gs)/1000,c,d,s,b;if(e<4){c=1;d=900;s=4.2;b=.05}else if(e<10){c=1;d=700;s=3.8;b=.12}else if(e<20){c=2;d=550;s=3.3;b=.2}else{c=3;d=400;s=2.8;b=.3}for(let i=0;i<c;i++)setTimeout(()=>N(s,Math.random()<b),i*120);tm=setTimeout(W,d)}
+let sw=false,lx=0,ly=0;function Q(){let a=$('a3');a.onpointerdown=e=>{sw=true;lx=e.clientX;ly=e.clientY};a.onpointermove=e=>{if(!sw)return;Lp(lx,ly,e.clientX,e.clientY);K(lx,ly,e.clientX,e.clientY);lx=e.clientX;ly=e.clientY};a.onpointerup=()=>{sw=false;cc=0}}
+function Lp(x1,y1,x2,y2){let l=Math.hypot(x2-x1,y2-y1);if(l<2)return;let ag=Math.atan2(y2-y1,x2-x1)*180/Math.PI;let n=document.createElement('div');n.className='ln';n.style.left=x1+'px';n.style.top=y1+'px';n.style.width=l+'px';n.style.transform='rotate('+ag+'deg)';$('a3').appendChild(n);setTimeout(()=>n.remove(),60)}
+function K(x1,y1,x2,y2){document.querySelectorAll('.fr').forEach(f=>{if(f.dataset.c=='1')return;let r=f.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;let A=cx-x1,B=cy-y1,C=x2-x1,D=y2-y1,dot=A*C+B*D,ll=C*C+D*D,t=ll==0?0:dot/ll;t=Math.max(0,Math.min(1,t));let xx=x1+t*C,yy=y1+t*D;if(Math.hypot(cx-xx,cy-yy)<28){f.dataset.c='1';if(f.dataset.t=='b'){s3-=5;if(s3<0)s3=0;$('c3').innerText=s3;f.remove();cc=0;return}let nw=Date.now();if(nw-lc<600)cc++;else cc=1;lc=nw;let pt=cc>=3?cc*2:1;if(cc>=3)cc=0;s3+=pt;$('c3').innerText=s3;f.remove()}})}
+function F(){bs+=12;if(bs>100){s1-=8;if(s1<0)s1=0;bs=40;}else{s1+=18;}$('c1').innerText=s1}
+</script></body></html>
